@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
+use App\UseCase\Task\CreateTaskAction;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,8 +50,9 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks", name="task.store", methods={"POST"})
      */
-    public function store(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function store(Request $request, EntityManagerInterface $entityManager, CreateTaskAction $createTaskAction): JsonResponse
     {
+//        $createTaskAction();
         $task = new Task();
         $task->setTitle($request->get('title'));
         $task->setDescription($request->get('description'));
