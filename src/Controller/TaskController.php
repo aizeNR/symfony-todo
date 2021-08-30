@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,10 +28,11 @@ class TaskController extends BaseController
     private $taskRepository;
 
     public function __construct(
-        ValidatorInterface $validator,
+        ValidatorInterface    $validator,
         ValidationErrorHelper $validationErrorHelper,
-        TaskRepository $repository
-    ) {
+        TaskRepository        $repository
+    )
+    {
         $this->validator = $validator;
         $this->validationErrorHelper = $validationErrorHelper;
         $this->taskRepository = $repository;
@@ -47,10 +49,8 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks", name="task.store", methods={"POST"})
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         $task = new Task();
         $task->setTitle($request->get('title'));
         $task->setDescription($request->get('description'));
@@ -80,14 +80,44 @@ class TaskController extends BaseController
     {
         $task = $this->taskRepository->find($id);
 
-        if(is_null($task)) {
+        if (is_null($task)) {
             return $this->errorResponse(
-                [
-                    'errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)],
-                ],
+                ['errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)]],
                 404
             );
         }
+
+        return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
+    }
+
+    /**
+     * @Route("/tasks/{id}", methods={"PUT"})
+     */
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $task = $this->taskRepository->find($id);
+
+        if (is_null($task)) {
+            return $this->errorResponse(
+                ['errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)]],
+                404
+            );
+        }
+
+        $task->setTitle($request->get('title'));
+        $task->setDescription($request->get('description'));
+
+        $errors = $this->validator->validate($task);
+
+        if (count($errors) > 0) {
+            return $this->errorResponse(
+                $this->validationErrorHelper->getPrettyErrors($errors),
+                422
+            );
+        }
+
+        $entityManager->persist($task);
+        $entityManager->flush();
 
         return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
     }
