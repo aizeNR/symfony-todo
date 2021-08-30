@@ -14,6 +14,11 @@ class ValidationErrorHelper
             $prettyList[$error->getPropertyPath()][] = $error->getMessage();
         }
 
-        return $prettyList;
+        return ['errors' => [$prettyList]];
+    }
+
+    public function getMessageForNotFound(string $entity, $findKey): string
+    {
+        return "{$entity} with key '{$findKey}' not found!";
     }
 }

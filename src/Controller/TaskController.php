@@ -39,14 +39,9 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks", name="task.index")
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        return $this->successResponse(
-            $this->taskRepository->findAll(),
-            200,
-            [],
-            ['groups' => 'show_task']
-        );
+        return $this->successResponse($this->taskRepository->findAll(), 200, [], ['groups' => 'show_task']);
     }
 
     /**
@@ -72,12 +67,28 @@ class TaskController extends BaseController
         $entityManager->persist($task);
         $entityManager->flush();
 
+        return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
+    }
 
-        return $this->successResponse(
-            $task,
-            200,
-            [],
-            ['groups' => 'show_task']
-        );
+    /**
+     * @Route("/tasks/{id}", methods={"GET"})
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $task = $this->taskRepository->find($id);
+
+        if(is_null($task)) {
+            return $this->errorResponse(
+                [
+                    'errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)],
+                ],
+                404
+            );
+        }
+
+        return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
     }
 }
