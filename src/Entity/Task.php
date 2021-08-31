@@ -33,6 +33,13 @@ class Task
      */
     private $description;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"show_task"})
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -58,6 +65,18 @@ class Task
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

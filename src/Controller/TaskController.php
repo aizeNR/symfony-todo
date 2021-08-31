@@ -29,9 +29,11 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks", name="task.index", methods={"GET"})
      */
-    public function index(TaskRepository $repository): JsonResponse
+    public function index(Request $request, TaskRepository $repository): JsonResponse
     {
-        return $this->successResponse($repository->findAll(), 200, [], ['groups' => 'show_task']);
+        $tasks = $repository->paginate($request->get('page', 1));
+
+        return $this->successResponse($tasks->getResults(), 200, [], ['groups' => 'show_task']);
     }
 
     /**
