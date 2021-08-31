@@ -2,8 +2,9 @@
 
 namespace App\UseCase\Task;
 
+use App\DTO\Task\CreateTaskDTO;
 use App\Entity\Task;
-use App\Helpers\ValidationErrorHelper;
+use App\Exception\CreateTaskException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -13,48 +14,53 @@ class CreateTaskAction
      * @var EntityManagerInterface
      */
     private $entityManager;
+
     /**
      * @var ValidatorInterface
      */
     private $validator;
-    /**
-     * @var ValidationErrorHelper
-     */
-    private $errorHelper;
 
     /**
      * @param EntityManagerInterface $entityManager
+     * @param ValidatorInterface $validator
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ValidatorInterface $validator,
-        ValidationErrorHelper $errorHelper
-    ) {
+        ValidatorInterface     $validator
+    )
+    {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
-        $this->errorHelper = $errorHelper;
     }
 
-    public function __invoke(TaskDTO $taskDTO) // Create DTO
+    /**
+     * @throws CreateTaskApiException
+     * @throws CreateTaskException
+     */
+    public function __invoke(CreateTaskDTO $taskDTO): Task // Create DTO
     {
         $task = new Task();
 
         $task->setTitle($taskDTO->getTitle());
-        $task->setDescription($taskDTO->getDesctription());
+        $task->setDescription($taskDTO->getDescription());
 
         $this->validateTask($task);
 
         $this->entityManager->persist($task);
         $this->entityManager->flush();
-        // TODO: Implement __invoke() method.
+
+        return $task;
     }
 
+    /**
+     * @throws CreateTaskException
+     */
     private function validateTask(Task $task): void
     {
         $errors = $this->validator->validate($task);
 
-        if (count($errors) > 0) {
-            throw new \InvalidArgumentException(); // Change to custom exception, and pretty it
+        if (count($errors) > 0) { // find a way, to handle it, and reform
+            throw new CreateTaskException($errors);
         }
     }
 }

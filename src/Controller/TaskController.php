@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\DTO\Task\CreateTaskDTO;
 use App\Entity\Task;
+use App\Exception\CreateTaskException;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
 use App\UseCase\Task\CreateTaskAction;
@@ -40,7 +42,7 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route("/tasks", name="task.index")
+     * @Route("/tasks", name="task.index", methods={"GET"})
      */
     public function index(): JsonResponse
     {
@@ -50,24 +52,18 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks", name="task.store", methods={"POST"})
      */
-    public function store(Request $request, EntityManagerInterface $entityManager, CreateTaskAction $createTaskAction): JsonResponse
+    public function store(Request $request, CreateTaskAction $createTaskAction): JsonResponse
     {
-//        $createTaskAction();
-        $task = new Task();
-        $task->setTitle($request->get('title'));
-        $task->setDescription($request->get('description'));
+        $taskDTO = new CreateTaskDTO(
+            $request->get('title'),
+            $request->get('description')
+        );
 
-        $errors = $this->validator->validate($task);
-
-        if (count($errors) > 0) {
-            return $this->errorResponse(
-                $this->validationErrorHelper->getPrettyErrors($errors),
-                422
-            );
+        try {
+            $task = $createTaskAction($taskDTO);
+        } catch (CreateTaskException $exception) { // move to glo
+            return $this->successResponse($exception->getMessage(), 422);
         }
-
-        $entityManager->persist($task);
-        $entityManager->flush();
 
         return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
     }
