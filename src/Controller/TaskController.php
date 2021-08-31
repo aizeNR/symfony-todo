@@ -13,41 +13,25 @@ use App\UseCase\Task\UpdateTaskAction;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class TaskController extends BaseController
 {
     /**
-     * @var ValidatorInterface
-     */
-    private $validator;
-
-    /**
      * @var ValidationErrorHelper
      */
     private $validationErrorHelper;
-    /**
-     * @var TaskRepository
-     */
-    private $taskRepository;
 
-    public function __construct(
-        ValidatorInterface    $validator,
-        ValidationErrorHelper $validationErrorHelper,
-        TaskRepository        $repository
-    )
+    public function __construct(ValidationErrorHelper $validationErrorHelper)
     {
-        $this->validator = $validator;
         $this->validationErrorHelper = $validationErrorHelper;
-        $this->taskRepository = $repository;
     }
 
     /**
      * @Route("/tasks", name="task.index", methods={"GET"})
      */
-    public function index(): JsonResponse
+    public function index(TaskRepository $repository): JsonResponse
     {
-        return $this->successResponse($this->taskRepository->findAll(), 200, [], ['groups' => 'show_task']);
+        return $this->successResponse($repository->findAll(), 200, [], ['groups' => 'show_task']);
     }
 
     /**
@@ -63,7 +47,7 @@ class TaskController extends BaseController
         try {
             $task = $createTaskAction($taskDTO);
         } catch (CreateTaskException $exception) { // move to global handler
-            return $this->successResponse($exception->getMessage(), 422);
+            return $this->errorResponse($exception->getMessage(), 422);
         }
 
         return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
@@ -73,11 +57,12 @@ class TaskController extends BaseController
      * @Route("/tasks/{id}", methods={"GET"})
      *
      * @param int $id
+     * @param TaskRepository $repository
      * @return JsonResponse
      */
-    public function show(int $id): JsonResponse
+    public function show(int $id, TaskRepository $repository): JsonResponse
     {
-        $task = $this->taskRepository->find($id);
+        $task = $repository->find($id);
 
         if (is_null($task)) {
             return $this->errorResponse(
@@ -102,9 +87,37 @@ class TaskController extends BaseController
         try {
             $task = $updateTaskAction($id, $taskDTO);
         } catch (CreateTaskException $exception) { // move to global handler
-            return $this->successResponse($exception->getMessage(), 422);
+            return $this->errorResponse($exception->getMessage(), 422);
         }
 
         return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
+    }
+
+    /**
+     * @Route ("/tasks/{id}", methods={"DELETE"})
+     *
+     * @param int $id
+     * @param TaskRepository $repository
+     * @return JsonResponse
+     */
+    public function delete(int $id, TaskRepository $repository): JsonResponse
+    {
+        $task = $repository->find($id);
+
+        if (is_null($task)) {
+            return $this->errorResponse(
+                ['errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)]],
+                404
+            );
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->remove($task);
+        $em->flush();
+
+        return $this->successResponse([
+            'status' => true
+        ]);
     }
 }
