@@ -4,9 +4,11 @@ namespace App\UseCase\Task;
 
 use App\DTO\Task\CreateTaskDTO;
 use App\Entity\Task;
+use App\Entity\User;
 use App\Exception\Task\CreateTaskException;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateTaskAction
@@ -45,7 +47,7 @@ class CreateTaskAction
      */
     public function __invoke(CreateTaskDTO $taskDTO): Task // Create DTO
     {
-        $user = $this->userRepository->find($taskDTO->getUserId()); // add check exists user
+        $user = $this->findUser($taskDTO->getUserId());
 
         $task = new Task();
 
@@ -71,5 +73,16 @@ class CreateTaskAction
         if (count($errors) > 0) { // find a way, to handle it, and reform
             throw new CreateTaskException($errors);
         }
+    }
+
+    private function findUser($userId): User // mb go to trait
+    {
+        $user = $this->userRepository->find($userId);
+
+        if (is_null($user)) {
+            throw new InvalidArgumentException(); // TODO switch to custom
+        }
+
+        return $user;
     }
 }
