@@ -8,15 +8,22 @@ class CreateTaskDTO
      * @var string
      */
     private $title;
+
     /**
      * @var string|null
      */
     private $description;
 
-    public function __construct(?string $title, ?string $description)
+    /**
+     * @var int
+     */
+    private $userId;
+
+    public function __construct(string $title, ?string $description, int $userId)
     {
         $this->title = $title;
         $this->description = $description;
+        $this->userId = $userId;
     }
 
     /**
@@ -33,5 +40,13 @@ class CreateTaskDTO
     public function getTitle(): ?string
     {
         return $this->title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
     }
 }

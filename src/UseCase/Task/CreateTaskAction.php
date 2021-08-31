@@ -5,6 +5,7 @@ namespace App\UseCase\Task;
 use App\DTO\Task\CreateTaskDTO;
 use App\Entity\Task;
 use App\Exception\Task\CreateTaskException;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -19,6 +20,10 @@ class CreateTaskAction
      * @var ValidatorInterface
      */
     private $validator;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -26,11 +31,13 @@ class CreateTaskAction
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ValidatorInterface     $validator
+        ValidatorInterface     $validator,
+        UserRepository $userRepository
     )
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -38,10 +45,13 @@ class CreateTaskAction
      */
     public function __invoke(CreateTaskDTO $taskDTO): Task // Create DTO
     {
+        $user = $this->userRepository->find($taskDTO->getUserId()); // add check exists user
+
         $task = new Task();
 
         $task->setTitle($taskDTO->getTitle());
         $task->setDescription($taskDTO->getDescription());
+        $task->setUser($user);
 
         $this->validateTask($task);
 

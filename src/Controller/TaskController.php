@@ -41,9 +41,10 @@ class TaskController extends BaseController
      */
     public function store(Request $request, CreateTaskAction $createTaskAction): JsonResponse
     {
-        $taskDTO = new CreateTaskDTO(
+        $taskDTO = new CreateTaskDTO( // need add validation to request
             $request->get('title'),
-            $request->get('description')
+            $request->get('description'),
+            $request->get('user_id')
         );
 
         try {
@@ -83,7 +84,8 @@ class TaskController extends BaseController
     {
         $taskDTO = new UpdateTaskDTO(
             $request->get('title'),
-            $request->get('description')
+            $request->get('description'),
+            $request->get('user_id')
         );
 
         try {
