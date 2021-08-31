@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exception;
+namespace App\Exception\Task;
 
 use App\Contracts\FlashApiException;
 

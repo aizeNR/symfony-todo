@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\DTO\Task\CreateTaskDTO;
+use App\DTO\Task\UpdateTaskDTO;
 use App\Entity\Task;
-use App\Exception\CreateTaskException;
+use App\Exception\Task\CreateTaskException;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
 use App\UseCase\Task\CreateTaskAction;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\Task\UpdateTaskAction;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,7 +62,7 @@ class TaskController extends BaseController
 
         try {
             $task = $createTaskAction($taskDTO);
-        } catch (CreateTaskException $exception) { // move to glo
+        } catch (CreateTaskException $exception) { // move to global handler
             return $this->successResponse($exception->getMessage(), 422);
         }
 
@@ -91,31 +92,18 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks/{id}", methods={"PUT"})
      */
-    public function update(int $id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function update(int $id, Request $request, UpdateTaskAction $updateTaskAction): JsonResponse
     {
-        $task = $this->taskRepository->find($id);
+        $taskDTO = new UpdateTaskDTO(
+            $request->get('title'),
+            $request->get('description')
+        );
 
-        if (is_null($task)) {
-            return $this->errorResponse(
-                ['errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)]],
-                404
-            );
+        try {
+            $task = $updateTaskAction($id, $taskDTO);
+        } catch (CreateTaskException $exception) { // move to global handler
+            return $this->successResponse($exception->getMessage(), 422);
         }
-
-        $task->setTitle($request->get('title'));
-        $task->setDescription($request->get('description'));
-
-        $errors = $this->validator->validate($task);
-
-        if (count($errors) > 0) {
-            return $this->errorResponse(
-                $this->validationErrorHelper->getPrettyErrors($errors),
-                422
-            );
-        }
-
-        $entityManager->persist($task);
-        $entityManager->flush();
 
         return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
     }
