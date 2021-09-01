@@ -16,14 +16,14 @@ class Task
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"show_task"})
+     * @Groups({"show_task", "list_task"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Groups({"show_task"})
+     * @Groups({"show_task", "list_task"})
      */
     private $title;
 

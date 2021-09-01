@@ -27,7 +27,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=30, unique=true)
      * @Assert\NotBlank
-     * @Groups({"show_task"})
      */
     private $email;
 

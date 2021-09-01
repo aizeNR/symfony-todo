@@ -4,10 +4,8 @@ namespace App\UseCase\Task;
 
 use App\DTO\Task\UpdateTaskDTO;
 use App\Entity\Task;
-use App\Entity\User;
 use App\Exception\Task\UpdateTaskException;
 use App\Repository\TaskRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -23,14 +21,12 @@ class UpdateTaskAction
      * @var ValidatorInterface
      */
     private $validator;
+
     /**
      * @var TaskRepository
      */
     private $taskRepository;
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -40,13 +36,11 @@ class UpdateTaskAction
         EntityManagerInterface $entityManager,
         ValidatorInterface     $validator,
         TaskRepository         $taskRepository,
-        UserRepository         $userRepository
     )
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->taskRepository = $taskRepository;
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -55,11 +49,10 @@ class UpdateTaskAction
     public function __invoke(int $taskId, UpdateTaskDTO $taskDTO): Task
     {
         $task = $this->findTask($taskId);
-        $user = $this->findUser($taskDTO->getUserId());
 
         $task->setTitle($taskDTO->getTitle());
         $task->setDescription($taskDTO->getDescription());
-        $task->setUser($user);
+        $task->setUser($taskDTO->getUser());
 
         $this->validateTask($task);
 
@@ -90,16 +83,5 @@ class UpdateTaskAction
         }
 
         return $task;
-    }
-
-    private function findUser($userId): User
-    {
-        $user = $this->userRepository->find($userId);
-
-        if (is_null($user)) {
-            throw new InvalidArgumentException(); // TODO switch to custom
-        }
-
-        return $user;
     }
 }

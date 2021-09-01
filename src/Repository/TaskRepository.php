@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,11 +21,22 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function paginate($page = 1): Paginator
+    public function paginate($page = 1, $filterByUser): Paginator
     {
         $qb = $this->createQueryBuilder('p')
             ->addSelect( 'u')
             ->innerJoin('p.user', 'u');
+
+        return (new Paginator($qb))->paginate($page);
+    }
+
+    public function getPaginateTasksForUser(User $user, int $page = 1): Paginator
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect( 'u')
+            ->innerJoin('p.user', 'u')
+            ->where('u.id = :userId')
+            ->setParameter(':userId', $user->getId());
 
         return (new Paginator($qb))->paginate($page);
     }

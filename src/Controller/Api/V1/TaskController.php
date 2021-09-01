@@ -8,6 +8,7 @@ use App\Entity\Task;
 use App\Exception\Task\CreateTaskException;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
+use App\Security\VoterCrud;
 use App\UseCase\Task\CreateTaskAction;
 use App\UseCase\Task\UpdateTaskAction;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,9 +32,13 @@ class TaskController extends BaseController
      */
     public function index(Request $request, TaskRepository $repository): JsonResponse
     {
-        $tasks = $repository->paginate($request->get('page', 1));
+        $user = $this->getUser();
 
-        return $this->successResponse($tasks->getResults(), 200, [], ['groups' => 'show_task']);
+        $page = (int)$request->get('page', 1);
+
+        $tasks = $repository->getPaginateTasksForUser($user, $page);
+
+        return $this->successResponse($tasks->getResults(), 200, [], ['groups' => 'list_task']);
     }
 
     /**
@@ -41,10 +46,12 @@ class TaskController extends BaseController
      */
     public function store(Request $request, CreateTaskAction $createTaskAction): JsonResponse
     {
+        $user = $this->getUser();
+
         $taskDTO = new CreateTaskDTO( // need add validation to request
             $request->get('title'),
             $request->get('description'),
-            $request->get('user_id')
+            $user
         );
 
         try {
@@ -67,6 +74,8 @@ class TaskController extends BaseController
     {
         $task = $repository->find($id);
 
+        $this->denyAccessUnlessGranted(VoterCrud::VIEW, $task);
+
         if (is_null($task)) {
             return $this->errorResponse(
                 ['errors' => [$this->validationErrorHelper->getMessageForNotFound(Task::class, $id)]],
@@ -80,12 +89,17 @@ class TaskController extends BaseController
     /**
      * @Route("/tasks/{id}", methods={"PUT"})
      */
-    public function update(int $id, Request $request, UpdateTaskAction $updateTaskAction): JsonResponse
+    public function update(int $id, Request $request, UpdateTaskAction $updateTaskAction, TaskRepository $repository): JsonResponse
     {
-        $taskDTO = new UpdateTaskDTO(
+        $task = $repository->find($id);
+        $user = $this->getUser();
+
+        $this->denyAccessUnlessGranted(VoterCrud::EDIT, $task);
+
+        $taskDTO = new UpdateTaskDTO( // need add validation to request
             $request->get('title'),
             $request->get('description'),
-            $request->get('user_id')
+            $user
         );
 
         try {
@@ -107,6 +121,8 @@ class TaskController extends BaseController
     public function delete(int $id, TaskRepository $repository): JsonResponse
     {
         $task = $repository->find($id);
+
+        $this->denyAccessUnlessGranted(VoterCrud::DELETE, $task);
 
         if (is_null($task)) {
             return $this->errorResponse(

@@ -2,6 +2,8 @@
 
 namespace App\DTO\Task;
 
+use App\Entity\User;
+
 class CreateTaskDTO
 {
     /**
@@ -15,15 +17,15 @@ class CreateTaskDTO
     private $description;
 
     /**
-     * @var int
+     * @var User
      */
-    private $userId;
+    private $user;
 
-    public function __construct(string $title, ?string $description, int $userId)
+    public function __construct(string $title, ?string $description, User $user)
     {
         $this->title = $title;
         $this->description = $description;
-        $this->userId = $userId;
+        $this->user = $user;
     }
 
     /**
@@ -43,10 +45,10 @@ class CreateTaskDTO
     }
 
     /**
-     * @return int
+     * @return User
      */
-    public function getUserId(): int
+    public function getUser(): User
     {
-        return $this->userId;
+        return $this->user;
     }
 }
