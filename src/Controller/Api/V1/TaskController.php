@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api\V1;
 
 use App\DTO\Task\CreateTaskDTO;
 use App\DTO\Task\UpdateTaskDTO;

@@ -1,8 +1,8 @@
 controllers:
-    resource: ../../src/Controller/
+    resource: ../../src/Controller/Api/
     type: annotation
-    prefix: '/api'
-    name_prefix: 'api_'
+    prefix: '/api/v1'
+    name_prefix: 'api_v1_'
 
 kernel:
     resource: ../../src/Kernel.php
