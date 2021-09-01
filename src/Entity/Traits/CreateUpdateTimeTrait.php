@@ -3,7 +3,9 @@
 namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 trait CreateUpdateTimeTrait
 {
@@ -11,6 +13,7 @@ trait CreateUpdateTimeTrait
      * @var \DateTime
      *
      * @ORM\Column (name="created_at", type="datetime", nullable=true)
+     * @Context({ DateTimeNormalizer::FORMAT_KEY = "Y-m-d H:i" })
      * @Groups ({"default"})
      */
     private $createdAt;
@@ -19,6 +22,7 @@ trait CreateUpdateTimeTrait
      * @var \DateTime
      *
      * @ORM\Column (name="updated_at", type="datetime", nullable=true)
+     * @Context({ DateTimeNormalizer::FORMAT_KEY = "Y-m-d H:i" })
      * @Groups ({"default"})
      */
     private $updatedAt;
