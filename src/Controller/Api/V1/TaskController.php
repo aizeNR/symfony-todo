@@ -69,7 +69,7 @@ class TaskController extends BaseController
         );
 
         try {
-            $task = $createTaskAction($taskDTO);
+            $task = $createTaskAction->execute($taskDTO);
         } catch (CreateTaskException $exception) { // move to global handler
             return $this->errorResponse($exception->getMessage(), 422);
         }
@@ -135,7 +135,7 @@ class TaskController extends BaseController
         );
 
         try {
-            $task = $updateTaskAction($id, $taskDTO);
+            $task = $updateTaskAction->execute($id, $taskDTO);
         } catch (CreateTaskException $exception) { // move to global handler
             return $this->errorResponse($exception->getMessage(), 422);
         }

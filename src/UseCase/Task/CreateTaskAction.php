@@ -36,7 +36,7 @@ class CreateTaskAction
     /**
      * @throws CreateTaskException
      */
-    public function __invoke(CreateTaskDTO $taskDTO): Task
+    public function execute(CreateTaskDTO $taskDTO): Task
     {
         $task = new Task();
 
@@ -55,7 +55,7 @@ class CreateTaskAction
     /**
      * @throws CreateTaskException
      */
-    private function validateTask(Task $task): void
+    private function validateTask(Task $task): void // mb move to service
     {
         $errors = $this->validator->validate($task);
 

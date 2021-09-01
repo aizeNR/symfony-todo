@@ -2,41 +2,32 @@
 
 namespace App\Controller\Api\V1;
 
+use App\DTO\User\CreateUserDTO;
 use App\Entity\User;
+use App\Services\UserService;
+use App\UseCase\User\CreateUserAction;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AuthController extends BaseController
 {
     /**
-     * @var UserPasswordHasherInterface
-     */
-    private $hasher;
-
-    public function __construct(UserPasswordHasherInterface $hasher)
-    {
-        $this->hasher = $hasher;
-    }
-
-    /**
      * @Route ("/register", methods={"POST"})
      * @param Request $request
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function register(Request $request): JsonResponse
+    public function register(Request $request, UserService $userService): JsonResponse
     {
-        $em = $this->getDoctrine()->getManager();
+        $userDTO = new CreateUserDTO(
+            $request->request->get('email'),
+            $request->request->get('password')
+        );
 
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
-
-        $user = new User();
-        $user->setEmail($email);
-        $user->setPassword($this->hasher->hashPassword($user, $password));
-
-        $em->persist($user);
-        $em->flush();
+        $userService->createUser($userDTO);
 
         return $this->successResponse([], 204);
     }

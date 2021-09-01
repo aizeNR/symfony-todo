@@ -46,7 +46,7 @@ class UpdateTaskAction
     /**
      * @throws UpdateTaskException
      */
-    public function __invoke(int $taskId, UpdateTaskDTO $taskDTO): Task
+    public function execute(int $taskId, UpdateTaskDTO $taskDTO): Task
     {
         $task = $this->findTask($taskId);
 
@@ -65,7 +65,7 @@ class UpdateTaskAction
     /**
      * @throws UpdateTaskException
      */
-    private function validateTask(Task $task): void
+    private function validateTask(Task $task): void // TODO move to service
     {
         $errors = $this->validator->validate($task);
 
