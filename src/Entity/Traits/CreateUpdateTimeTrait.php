@@ -56,7 +56,6 @@ trait CreateUpdateTimeTrait
 
     /**
      * @ORM\PrePersist
-     * @param \DateTime $createdAt
      */
     public function setCreatedAtValue()
     {

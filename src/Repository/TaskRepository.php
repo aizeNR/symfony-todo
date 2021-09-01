@@ -30,7 +30,7 @@ class TaskRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
-    public function getPaginateTasksForUser(User $user, int $page = 1): Paginator
+    public function getPaginateTasksForUser(User $user, int $page = 1, $limit = 10): Paginator
     {
         $qb = $this->createQueryBuilder('p')
             ->addSelect( 'u')
@@ -38,7 +38,7 @@ class TaskRepository extends ServiceEntityRepository
             ->where('u.id = :userId')
             ->setParameter(':userId', $user->getId());
 
-        return (new Paginator($qb))->paginate($page);
+        return (new Paginator($qb, $limit))->paginate($page);
     }
 
     // /**

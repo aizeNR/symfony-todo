@@ -36,8 +36,9 @@ class TaskController extends BaseController
         $user = $this->getUser();
 
         $page = (int)$request->get('page', 1);
+        $limit = (int) $request->get('limit');
 
-        $tasks = $repository->getPaginateTasksForUser($user, $page);
+        $tasks = $repository->getPaginateTasksForUser($user, $page, $limit);
 
         return $this->successResponse(
             $tasks->getResults(),
