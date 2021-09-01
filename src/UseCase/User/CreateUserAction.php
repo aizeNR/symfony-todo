@@ -6,6 +6,7 @@ use App\DTO\User\CreateUserDTO;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUserAction
 {
@@ -19,13 +20,20 @@ class CreateUserAction
      */
     private $entityManager;
 
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
     public function __construct(
         UserPasswordHasherInterface $hasher,
-        EntityManagerInterface      $entityManager
+        EntityManagerInterface      $entityManager,
+        ValidatorInterface $validator
     )
     {
         $this->hasher = $hasher;
         $this->entityManager = $entityManager;
+        $this->validator = $validator;
     }
 
     public function execute(CreateUserDTO $createUserDTO): User
@@ -34,6 +42,7 @@ class CreateUserAction
         $password = $createUserDTO->getPassword();
 
         // TODO validate
+        $this->validateDTO($createUserDTO);
 
         $user = new User();
         $user->setEmail($email);
@@ -43,5 +52,14 @@ class CreateUserAction
         $this->entityManager->flush();
 
         return $user;
+    }
+
+    private function validateDTO(CreateUserDTO $createUserDTO)
+    {
+        $errors = $this->validator->validate($createUserDTO);
+
+        if (count($errors) > 0) { // find a way, to handle it, and reform
+            throw new \DomainException($errors);
+        }
     }
 }

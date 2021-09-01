@@ -2,13 +2,21 @@
 
 namespace App\DTO\User;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class CreateUserDTO
 {
     /**
+     * @Assert\NotBlank
+     * @Assert\Length(min=5, max=16)
+     * @Assert\Email
      * @var string
      */
     private $email;
+
     /**
+     * @Assert\NotBlank
+     * @Assert\Length(min=6, max=16)
      * @var string
      */
     private $password;
