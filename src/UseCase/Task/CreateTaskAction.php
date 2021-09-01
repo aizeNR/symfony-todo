@@ -38,13 +38,13 @@ class CreateTaskAction
      */
     public function execute(CreateTaskDTO $taskDTO): Task
     {
+        $this->validateCreateTaskDto($taskDTO);
+
         $task = new Task();
 
         $task->setTitle($taskDTO->getTitle());
         $task->setDescription($taskDTO->getDescription());
         $task->setUser($taskDTO->getUser());
-
-        $this->validateTask($task);
 
         $this->entityManager->persist($task);
         $this->entityManager->flush();
@@ -55,9 +55,9 @@ class CreateTaskAction
     /**
      * @throws CreateTaskException
      */
-    private function validateTask(Task $task): void // mb move to service
+    private function validateCreateTaskDto(CreateTaskDTO $taskDTO)
     {
-        $errors = $this->validator->validate($task);
+        $errors = $this->validator->validate($taskDTO);
 
         if (count($errors) > 0) { // find a way, to handle it, and reform
             throw new CreateTaskException($errors);

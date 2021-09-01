@@ -3,10 +3,13 @@
 namespace App\DTO\Task;
 
 use App\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateTaskDTO
 {
     /**
+     * @Assert\NotBlank
+     * @Assert\Length(min=3, max=12)
      * @var string
      */
     private $title;
