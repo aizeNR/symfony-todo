@@ -45,7 +45,7 @@ class CreateUserAction
         $this->validateDTO($createUserDTO);
 
         $user = new User();
-        $user->setEmail($email);
+        $user->setEmail($email); //validate unique
         $user->setPassword($this->hasher->hashPassword($user, $password));
 
         $this->entityManager->persist($user);
