@@ -35,7 +35,7 @@ class UpdateTaskAction
     public function __construct(
         EntityManagerInterface $entityManager,
         ValidatorInterface     $validator,
-        TaskRepository         $taskRepository,
+        TaskRepository         $taskRepository
     )
     {
         $this->entityManager = $entityManager;

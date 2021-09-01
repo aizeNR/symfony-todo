@@ -26,7 +26,7 @@ class CreateTaskAction
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ValidatorInterface     $validator,
+        ValidatorInterface     $validator
     )
     {
         $this->entityManager = $entityManager;

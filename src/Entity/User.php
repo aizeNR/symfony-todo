@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\CreateUpdateTimeTrait;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,20 +14,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @method string getUserIdentifier()
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use CreateUpdateTimeTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"show_task"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=30, unique=true)
      * @Assert\NotBlank
+     * @Groups({"show_task"})
      */
     private $email;
 

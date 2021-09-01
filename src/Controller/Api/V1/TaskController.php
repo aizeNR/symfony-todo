@@ -14,6 +14,7 @@ use App\UseCase\Task\UpdateTaskAction;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class TaskController extends BaseController
 {
@@ -38,7 +39,19 @@ class TaskController extends BaseController
 
         $tasks = $repository->getPaginateTasksForUser($user, $page);
 
-        return $this->successResponse($tasks->getResults(), 200, [], ['groups' => 'list_task']);
+        return $this->successResponse(
+            $tasks->getResults(),
+            200,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    'list_task',
+                    'default'
+                ],
+                AbstractNormalizer::IGNORED_ATTRIBUTES => [
+                    'user'
+                ]
+            ]);
     }
 
     /**
@@ -60,7 +73,16 @@ class TaskController extends BaseController
             return $this->errorResponse($exception->getMessage(), 422);
         }
 
-        return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
+        return $this->successResponse(
+            $task,
+            200,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    'show_task',
+                    'default'
+                ]
+            ]);
     }
 
     /**
@@ -83,7 +105,16 @@ class TaskController extends BaseController
             );
         }
 
-        return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
+        return $this->successResponse(
+            $task,
+            200,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    'show_task',
+                    'default'
+                ]
+            ]);
     }
 
     /**
@@ -108,7 +139,16 @@ class TaskController extends BaseController
             return $this->errorResponse($exception->getMessage(), 422);
         }
 
-        return $this->successResponse($task, 200, [], ['groups' => 'show_task']);
+        return $this->successResponse(
+            $task,
+            200,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    'show_task',
+                    'default'
+                ]
+            ]);
     }
 
     /**
@@ -136,8 +176,6 @@ class TaskController extends BaseController
         $em->remove($task);
         $em->flush();
 
-        return $this->successResponse([
-            'status' => true
-        ]);
+        return $this->successResponse([], 204);
     }
 }
