@@ -12,6 +12,7 @@ class AvatarUploader
 
     /**
      * @param string $directory
+     * @param SluggerInterface $slugger
      */
     public function __construct(string $directory, SluggerInterface $slugger)
     {
@@ -23,7 +24,6 @@ class AvatarUploader
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->guessExtension();
-
 
         if (!is_null($fileName) && strlen($fileName) > 3) {
             $safeFilename = $this->slugger->slug($fileName);
