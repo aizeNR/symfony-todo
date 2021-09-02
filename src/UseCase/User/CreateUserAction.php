@@ -4,8 +4,8 @@ namespace App\UseCase\User;
 
 use App\DTO\User\CreateUserDTO;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Services\DTO\DtoValidator;
+use App\Services\File\AvatarService;
 use App\Services\MailService;
 use App\Services\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,12 +40,18 @@ class CreateUserAction
      */
     private $userService;
 
+    /**
+     * @var AvatarService
+     */
+    private AvatarService $avatarService;
+
     public function __construct(
         UserPasswordHasherInterface $hasher,
         EntityManagerInterface      $entityManager,
         DtoValidator $validator,
         MailService $mailService,
-        UserService $userService
+        UserService $userService,
+        AvatarService $avatarService
     )
     {
         $this->hasher = $hasher;
@@ -53,6 +59,7 @@ class CreateUserAction
         $this->validator = $validator;
         $this->mailService = $mailService;
         $this->userService = $userService;
+        $this->avatarService = $avatarService;
     }
 
     /**
@@ -64,17 +71,26 @@ class CreateUserAction
 
         $email = $createUserDTO->getEmail();
         $password = $createUserDTO->getPassword();
+        $avatar = $createUserDTO->getAvatar();
 
         $this->userService->checkUserExists($email);
+
+        $path = null;
+        if ($avatar) {
+            $path = $this->avatarService->save($avatar);
+        }
 
         $user = new User();
         $user->setEmail($email);
         $user->setPassword($this->hasher->hashPassword($user, $password));
+        $user->setAvatar($path);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
         $this->mailService->sendEmailToUser($user, 'test');
+
+
 
         return $user;
     }

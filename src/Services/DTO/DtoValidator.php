@@ -19,7 +19,7 @@ class DtoValidator
         $this->validator = $validator;
     }
 
-    public function validateDTO(BaseDTO $dto): ConstraintViolationListInterface
+    public function validateDTO(BaseDTO $dto): void
     {
         $errors = $this->validator->validate($dto);
 

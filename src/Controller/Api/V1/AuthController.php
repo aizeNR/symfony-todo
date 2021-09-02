@@ -24,7 +24,8 @@ class AuthController extends BaseController
     {
         $userDTO = new CreateUserDTO(
             $request->request->get('email'),
-            $request->request->get('password')
+            $request->request->get('password'),
+            $request->files->get('avatar')
         );
 
         $createUserAction->execute($userDTO);

@@ -27,3 +27,7 @@ services:
     App\Listeners\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Services\File\AvatarService:
+        arguments:
+            - '%kernel.project_dir%/public/uploads/avatars'

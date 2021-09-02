@@ -3,6 +3,8 @@
 namespace App\DTO\User;
 
 use App\DTO\BaseDTO;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateUserDTO extends BaseDTO
@@ -22,10 +24,17 @@ class CreateUserDTO extends BaseDTO
      */
     private $password;
 
-    public function __construct(string $email, string $password)
+    /**
+     * @Assert\Image()
+     * @var ?File
+     */
+    private $avatar;
+
+    public function __construct(string $email, string $password, ?File $avatar = null)
     {
         $this->email = $email;
         $this->password = $password;
+        $this->avatar = $avatar;
     }
 
     /**
@@ -42,5 +51,13 @@ class CreateUserDTO extends BaseDTO
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return  ?File
+     */
+    public function getAvatar(): ?UploadedFile
+    {
+        return $this->avatar;
     }
 }
