@@ -4,8 +4,8 @@ namespace App\UseCase\User;
 
 use App\DTO\User\CreateUserDTO;
 use App\Entity\User;
+use App\Services\AvatarUploader;
 use App\Services\DTO\DtoValidator;
-use App\Services\File\AvatarService;
 use App\Services\MailService;
 use App\Services\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,9 +41,9 @@ class CreateUserAction
     private $userService;
 
     /**
-     * @var AvatarService
+     * @var AvatarUploader
      */
-    private AvatarService $avatarService;
+    private AvatarUploader $avatarUploader;
 
     public function __construct(
         UserPasswordHasherInterface $hasher,
@@ -51,7 +51,7 @@ class CreateUserAction
         DtoValidator $validator,
         MailService $mailService,
         UserService $userService,
-        AvatarService $avatarService
+        AvatarUploader $avatarUploader
     )
     {
         $this->hasher = $hasher;
@@ -59,7 +59,7 @@ class CreateUserAction
         $this->validator = $validator;
         $this->mailService = $mailService;
         $this->userService = $userService;
-        $this->avatarService = $avatarService;
+        $this->avatarUploader = $avatarUploader;
     }
 
     /**
@@ -77,7 +77,7 @@ class CreateUserAction
 
         $path = null;
         if ($avatar) {
-            $path = $this->avatarService->save($avatar);
+            $path = $this->avatarUploader->upload($avatar);
         }
 
         $user = new User();
@@ -89,8 +89,6 @@ class CreateUserAction
         $this->entityManager->flush();
 
         $this->mailService->sendEmailToUser($user, 'test');
-
-
 
         return $user;
     }
