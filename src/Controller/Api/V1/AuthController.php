@@ -27,4 +27,21 @@ class AuthController extends BaseController
 
         return $this->successResponse([], 204);
     }
+
+    /**
+     * @Route ("/me", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function me(){
+        return $this->successResponse(
+            $this->getUser(),
+            200,
+            [],
+            [
+                'groups' => [
+                    'show_user'
+                ]
+            ]
+        );
+    }
 }

@@ -26,13 +26,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"show_task"})
+     * @Groups({"show_task", "show_user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=30, unique=true)
-     * @Groups({"show_task"})
+     * @Groups({"show_task", "show_user"})
      */
     private $email;
 
@@ -47,6 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $tasks;
 
     /**
+     * @Groups({"show_user"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $avatar;
