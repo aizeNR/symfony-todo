@@ -70,7 +70,7 @@ class TaskController extends BaseController
 
         try {
             $task = $createTaskAction->execute($taskDTO);
-        } catch (CreateTaskException $exception) { // move to global handler
+        } catch (\InvalidArgumentException $exception) { // move to global handler
             return $this->errorResponse($exception->getMessage(), 422);
         }
 
@@ -136,7 +136,7 @@ class TaskController extends BaseController
 
         try {
             $task = $updateTaskAction->execute($id, $taskDTO);
-        } catch (CreateTaskException $exception) { // move to global handler
+        } catch (\InvalidArgumentException $exception) { // move to global handler
             return $this->errorResponse($exception->getMessage(), 422);
         }
 

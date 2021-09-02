@@ -4,8 +4,8 @@ namespace App\UseCase\Task;
 
 use App\DTO\Task\UpdateTaskDTO;
 use App\Entity\Task;
-use App\Exception\Task\UpdateTaskException;
 use App\Repository\TaskRepository;
+use App\Services\DTO\DtoValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -30,11 +30,12 @@ class UpdateTaskAction
 
     /**
      * @param EntityManagerInterface $entityManager
-     * @param ValidatorInterface $validator
+     * @param DtoValidator $validator
+     * @param TaskRepository $taskRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ValidatorInterface     $validator,
+        DtoValidator     $validator,
         TaskRepository         $taskRepository
     )
     {
@@ -43,35 +44,24 @@ class UpdateTaskAction
         $this->taskRepository = $taskRepository;
     }
 
-    /**
-     * @throws UpdateTaskException
-     */
     public function execute(int $taskId, UpdateTaskDTO $taskDTO): Task
     {
+        $errors = $this->validator->validateDTO($taskDTO);
+
+        if (count($errors) > 0) {
+            throw new \InvalidArgumentException();
+        }
+
         $task = $this->findTask($taskId);
 
         $task->setTitle($taskDTO->getTitle());
         $task->setDescription($taskDTO->getDescription());
         $task->setUser($taskDTO->getUser());
 
-        $this->validateTask($task);
-
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
         return $task;
-    }
-
-    /**
-     * @throws UpdateTaskException
-     */
-    private function validateTask(Task $task): void // TODO move to service
-    {
-        $errors = $this->validator->validate($task);
-
-        if (count($errors) > 0) { // find a way, to handle it, and reform
-            throw new UpdateTaskException($errors);
-        }
     }
 
     private function findTask($taskId): Task

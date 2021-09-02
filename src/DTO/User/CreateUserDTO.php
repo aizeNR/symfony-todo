@@ -2,9 +2,10 @@
 
 namespace App\DTO\User;
 
+use App\DTO\BaseDTO;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateUserDTO
+class CreateUserDTO extends BaseDTO
 {
     /**
      * @Assert\NotBlank

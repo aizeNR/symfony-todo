@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\User;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -25,7 +26,7 @@ class MailService
     }
 
     /**
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function sendEmailToUser(User $user, $emailType)
     {

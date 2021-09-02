@@ -4,7 +4,7 @@ namespace App\UseCase\Task;
 
 use App\DTO\Task\CreateTaskDTO;
 use App\Entity\Task;
-use App\Exception\Task\CreateTaskException;
+use App\Services\DTO\DtoValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -22,11 +22,11 @@ class CreateTaskAction
 
     /**
      * @param EntityManagerInterface $entityManager
-     * @param ValidatorInterface $validator
+     * @param DtoValidator $validator
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ValidatorInterface     $validator
+        DtoValidator $validator
     )
     {
         $this->entityManager = $entityManager;
@@ -34,11 +34,14 @@ class CreateTaskAction
     }
 
     /**
-     * @throws CreateTaskException
      */
     public function execute(CreateTaskDTO $taskDTO): Task
     {
-        $this->validateCreateTaskDto($taskDTO);
+        $errors = $this->validator->validateDTO($taskDTO);
+
+        if (count($errors) > 0) {
+            throw new \InvalidArgumentException();
+        }
 
         $task = new Task();
 
@@ -50,17 +53,5 @@ class CreateTaskAction
         $this->entityManager->flush();
 
         return $task;
-    }
-
-    /**
-     * @throws CreateTaskException
-     */
-    private function validateCreateTaskDto(CreateTaskDTO $taskDTO)
-    {
-        $errors = $this->validator->validate($taskDTO);
-
-        if (count($errors) > 0) { // find a way, to handle it, and reform
-            throw new CreateTaskException($errors);
-        }
     }
 }

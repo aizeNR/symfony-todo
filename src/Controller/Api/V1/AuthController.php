@@ -20,14 +20,14 @@ class AuthController extends BaseController
      * @param Request $request
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function register(Request $request, UserService $userService): JsonResponse
+    public function register(Request $request, CreateUserAction $createUserAction): JsonResponse
     {
         $userDTO = new CreateUserDTO(
             $request->request->get('email'),
             $request->request->get('password')
         );
 
-        $userService->createUser($userDTO);
+        $createUserAction->execute($userDTO);
 
         return $this->successResponse([], 204);
     }

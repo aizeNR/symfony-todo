@@ -4,7 +4,12 @@ namespace App\UseCase\User;
 
 use App\DTO\User\CreateUserDTO;
 use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Services\DTO\DtoValidator;
+use App\Services\MailService;
+use App\Services\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -25,24 +30,46 @@ class CreateUserAction
      */
     private $validator;
 
+    /**
+     * @var MailService
+     */
+    private $mailService;
+
+    /**
+     * @var UserService
+     */
+    private $userService;
+
     public function __construct(
         UserPasswordHasherInterface $hasher,
         EntityManagerInterface      $entityManager,
-        ValidatorInterface $validator
+        DtoValidator $validator,
+        MailService $mailService,
+        UserService $userService
     )
     {
         $this->hasher = $hasher;
         $this->entityManager = $entityManager;
         $this->validator = $validator;
+        $this->mailService = $mailService;
+        $this->userService = $userService;
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function execute(CreateUserDTO $createUserDTO): User
     {
+        $errors = $this->validator->validateDTO($createUserDTO);
+
+        if (count($errors) > 0) {
+            throw new \InvalidArgumentException();
+        }
+
         $email = $createUserDTO->getEmail();
         $password = $createUserDTO->getPassword();
 
-        // TODO validate
-        $this->validateDTO($createUserDTO);
+        $this->userService->checkUserExists($email);
 
         $user = new User();
         $user->setEmail($email); //validate unique
@@ -50,6 +77,8 @@ class CreateUserAction
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        $this->mailService->sendEmailToUser($user, 'test');
 
         return $user;
     }

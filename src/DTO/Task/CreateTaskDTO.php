@@ -2,10 +2,11 @@
 
 namespace App\DTO\Task;
 
+use App\DTO\BaseDTO;
 use App\Entity\User;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateTaskDTO
+class CreateTaskDTO extends BaseDTO
 {
     /**
      * @Assert\NotBlank
