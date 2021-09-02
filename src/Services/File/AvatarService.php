@@ -3,30 +3,39 @@
 namespace App\Services\File;
 
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AvatarService extends FileService
 {
     private string $disk;
 
     /**
-     * @param string $disk
+     * @param string $directory
      */
-    public function __construct(string $disk)
+    public function __construct(string $directory)
     {
-        $this->disk = $disk;
+        $this->disk = $directory;
     }
 
-    // TODO fix file name, fix path
-    public function save(File $file, string $fileName = null): string
+    public function save(UploadedFile $file, string $fileName = null): string
     {
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->guessExtension();
-        $originalFileName = $file->getFilename();
 
-        if (!is_null($fileName)) {
-            return $file->move($this->disk, "{$fileName}.{$extension}")->getPathname();
+        if (!is_null($fileName) && strlen($fileName) > 3) {
+            $fileNameWithExtension = "{$fileName}.{$extension}";
+
+            $file->move($this->disk, $fileName);
+
+            return $fileNameWithExtension;
         }
 
-        return $file->move($this->disk, "{$originalFileName}.{$extension}")->getPathname();
+        $uniqid = uniqid();
+        $newFileName = "{$originalFilename}-{$uniqid}.{$extension}";
+
+        $file->move($this->disk, $newFileName);
+
+        return $newFileName;
     }
 
     public function get(string $path): File
