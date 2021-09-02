@@ -37,11 +37,7 @@ class CreateTaskAction
      */
     public function execute(CreateTaskDTO $taskDTO): Task
     {
-        $errors = $this->validator->validateDTO($taskDTO);
-
-        if (count($errors) > 0) {
-            throw new \InvalidArgumentException();
-        }
+        $this->validator->validateDTO($taskDTO);
 
         $task = new Task();
 

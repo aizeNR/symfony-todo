@@ -3,6 +3,7 @@
 namespace App\Services\DTO;
 
 use App\DTO\BaseDTO;
+use Symfony\Component\Messenger\Exception\ValidationFailedException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -20,6 +21,10 @@ class DtoValidator
 
     public function validateDTO(BaseDTO $dto): ConstraintViolationListInterface
     {
-        return $this->validator->validate($dto);
+        $errors = $this->validator->validate($dto);
+
+        if (count($errors) > 0) {
+            throw new ValidationFailedException($dto, $errors);
+        }
     }
 }

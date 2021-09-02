@@ -60,11 +60,7 @@ class CreateUserAction
      */
     public function execute(CreateUserDTO $createUserDTO): User
     {
-        $errors = $this->validator->validateDTO($createUserDTO);
-
-        if (count($errors) > 0) {
-            throw new \InvalidArgumentException();
-        }
+        $this->validator->validateDTO($createUserDTO);
 
         $email = $createUserDTO->getEmail();
         $password = $createUserDTO->getPassword();
@@ -72,7 +68,7 @@ class CreateUserAction
         $this->userService->checkUserExists($email);
 
         $user = new User();
-        $user->setEmail($email); //validate unique
+        $user->setEmail($email);
         $user->setPassword($this->hasher->hashPassword($user, $password));
 
         $this->entityManager->persist($user);
@@ -81,14 +77,5 @@ class CreateUserAction
         $this->mailService->sendEmailToUser($user, 'test');
 
         return $user;
-    }
-
-    private function validateDTO(CreateUserDTO $createUserDTO)
-    {
-        $errors = $this->validator->validate($createUserDTO);
-
-        if (count($errors) > 0) { // find a way, to handle it, and reform
-            throw new \DomainException($errors);
-        }
     }
 }

@@ -46,11 +46,7 @@ class UpdateTaskAction
 
     public function execute(int $taskId, UpdateTaskDTO $taskDTO): Task
     {
-        $errors = $this->validator->validateDTO($taskDTO);
-
-        if (count($errors) > 0) {
-            throw new \InvalidArgumentException();
-        }
+        $this->validator->validateDTO($taskDTO);
 
         $task = $this->findTask($taskId);
 
