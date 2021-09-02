@@ -68,11 +68,7 @@ class TaskController extends BaseController
             $user
         );
 
-        try {
-            $task = $createTaskAction->execute($taskDTO);
-        } catch (\InvalidArgumentException $exception) { // move to global handler
-            return $this->errorResponse($exception->getMessage(), 422);
-        }
+        $task = $createTaskAction->execute($taskDTO);
 
         return $this->successResponse(
             $task,
@@ -134,11 +130,7 @@ class TaskController extends BaseController
             $user
         );
 
-        try {
-            $task = $updateTaskAction->execute($id, $taskDTO);
-        } catch (\InvalidArgumentException $exception) { // move to global handler
-            return $this->errorResponse($exception->getMessage(), 422);
-        }
+        $task = $updateTaskAction->execute($id, $taskDTO);
 
         return $this->successResponse(
             $task,
