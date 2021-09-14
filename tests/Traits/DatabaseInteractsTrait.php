@@ -2,7 +2,9 @@
 
 namespace App\Tests\Traits;
 
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 trait DatabaseInteractsTrait
 {
@@ -13,8 +15,8 @@ trait DatabaseInteractsTrait
 
     protected function setUpEntityManager()
     {
-        if (empty(static::$kernel)) {
-            static::bootKernel();
+        if (!WebTestCase::$booted) {
+            throw new \LogicException('Boot kernel!');
         }
 
         $this->entityManager = static::$kernel->getContainer()
@@ -47,5 +49,14 @@ trait DatabaseInteractsTrait
         $this->assertNull($entity, $message);
 
         return $entity;
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $purger = new ORMPurger($this->entityManager);
+
+        $purger->purge();
     }
 }

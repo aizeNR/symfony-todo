@@ -36,6 +36,28 @@ class UserRegisteredTest extends WebTestCase
         $this->assertFindInDatabase(User::class, ['email' => $email]);
     }
 
+    /**
+     * @dataProvider invalidUserProvider
+     */
+    public function testUserCantRegistered($email, $password)
+    {
+        $this->client->request('POST', '/api/v1/register', [
+            'email' => $email,
+            'password' => $password
+        ]);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    public function invalidUserProvider(): array
+    {
+        return [
+            ['testmail.ru' , '1234Qwert'],
+            ['tesasdasdasdasdasdasdt@mail.ru' , '1234Qwert'],
+            ['testmail.ru' , '1234'],
+        ];
+    }
+
     public function validUserProvider(): array
     {
         return [
