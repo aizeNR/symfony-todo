@@ -50,16 +50,4 @@ trait DatabaseInteractsTrait
 
         return $entity;
     }
-
-    /**
-     * temp, because bundle dama/doctrine-test-bundle doesn't work...
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $purger = new ORMPurger($this->entityManager);
-
-        $purger->purge();
-    }
 }

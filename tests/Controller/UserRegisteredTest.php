@@ -72,7 +72,7 @@ class UserRegisteredTest extends WebTestCase
         return [
             ['testmail.ru', '1234Qwert'],
             ['tesasdasdasdasdasdasdt@mail.ru', '1234Qwert'],
-            ['testmail.ru', '1234'],
+            ['test@mail.ru', '1234'],
         ];
     }
 
