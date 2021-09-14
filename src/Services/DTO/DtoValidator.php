@@ -19,6 +19,10 @@ class DtoValidator
         $this->validator = $validator;
     }
 
+    /**
+     * @param BaseDTO $dto
+     * @throws ValidationFailedException
+     */
     public function validateDTO(BaseDTO $dto): void
     {
         $errors = $this->validator->validate($dto);

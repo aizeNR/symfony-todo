@@ -33,7 +33,7 @@ class AvatarPathNormalizer implements ContextAwareNormalizerInterface
             return $data;
         }
 
-        //
+        // TODO fix url
         $data['avatar'] = $this->packages->getUrl($this->directory . $data['avatar']);
 
         return $data;    }
