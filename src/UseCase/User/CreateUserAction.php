@@ -4,14 +4,15 @@ namespace App\UseCase\User;
 
 use App\DTO\User\CreateUserDTO;
 use App\Entity\User;
+use App\Event\User\CreateUserEvent;
 use App\Services\AvatarUploader;
 use App\Services\DTO\DtoValidator;
 use App\Services\MailService;
 use App\Services\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CreateUserAction
 {
@@ -31,11 +32,6 @@ class CreateUserAction
     private $validator;
 
     /**
-     * @var MailService
-     */
-    private $mailService;
-
-    /**
      * @var UserService
      */
     private $userService;
@@ -44,12 +40,13 @@ class CreateUserAction
      * @var AvatarUploader
      */
     private AvatarUploader $avatarUploader;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(
         UserPasswordHasherInterface $hasher,
         EntityManagerInterface      $entityManager,
         DtoValidator $validator,
-        MailService $mailService,
+        EventDispatcherInterface $dispatcher,
         UserService $userService,
         AvatarUploader $avatarUploader
     )
@@ -57,13 +54,12 @@ class CreateUserAction
         $this->hasher = $hasher;
         $this->entityManager = $entityManager;
         $this->validator = $validator;
-        $this->mailService = $mailService;
         $this->userService = $userService;
         $this->avatarUploader = $avatarUploader;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
-     * @throws TransportExceptionInterface
      */
     public function execute(CreateUserDTO $createUserDTO): User
     {
@@ -88,7 +84,7 @@ class CreateUserAction
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $this->mailService->sendEmailToUser($user, 'test');
+        $this->dispatcher->dispatch(new CreateUserEvent($user), CreateUserEvent::NAME);
 
         return $user;
     }

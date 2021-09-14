@@ -16,7 +16,6 @@ class AuthController extends BaseController
      * @param Request $request
      * @param CreateUserAction $createUserAction
      * @return JsonResponse
-     * @throws TransportExceptionInterface
      */
     public function register(Request $request, CreateUserAction $createUserAction): JsonResponse
     {
