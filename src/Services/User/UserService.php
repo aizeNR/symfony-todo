@@ -21,7 +21,7 @@ class UserService
         $user = $this->userRepository->findOneBy(['email' => $email]);
 
         if ($user) {
-            throw new \DomainException('User already exists!');
+            throw new \DomainException('User already exists!', 422);
         }
     }
 }

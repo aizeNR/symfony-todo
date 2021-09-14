@@ -49,20 +49,45 @@ class UserRegisteredTest extends WebTestCase
         $this->assertResponseStatusCodeSame(422);
     }
 
+    /**
+     * @dataProvider doesntUniqueEmailProvider
+     */
+    public function testWhatEmailUniqueForUser($email, $password)
+    {
+        $this->client->request('POST', '/api/v1/register', [
+            'email' => $email,
+            'password' => $password
+        ]);
+
+        $this->client->request('POST', '/api/v1/register', [
+            'email' => $email,
+            'password' => $password
+        ]);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
     public function invalidUserProvider(): array
     {
         return [
-            ['testmail.ru' , '1234Qwert'],
-            ['tesasdasdasdasdasdasdt@mail.ru' , '1234Qwert'],
-            ['testmail.ru' , '1234'],
+            ['testmail.ru', '1234Qwert'],
+            ['tesasdasdasdasdasdasdt@mail.ru', '1234Qwert'],
+            ['testmail.ru', '1234'],
         ];
     }
 
     public function validUserProvider(): array
     {
         return [
-            ['test@mail.ru' , '1234qwer'],
-            ['test3213@mail.ru' , '1234qwasder']
+            ['test@mail.ru', '1234qwer'],
+            ['test3213@mail.ru', '1234qwasder']
+        ];
+    }
+
+    public function doesntUniqueEmailProvider(): array
+    {
+        return [
+            ['test@mail.ru', '1234qwer'],
         ];
     }
 }
