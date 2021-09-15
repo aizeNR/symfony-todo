@@ -49,4 +49,11 @@ trait DatabaseInteractsTrait
 
         return $entity;
     }
+
+//    protected function assertFieldInDatabaseIsNotNull($entityName, array $criteria, $field)
+//    {
+//        $entity = $this->getRepository($entityName)->findOneBy($criteria);
+//
+//        $this->assertNotNull(1);
+//    }
 }

@@ -3,16 +3,12 @@
 namespace App\Tests\Unit;
 
 use App\Services\AvatarUploader;
-use LogicException;
+use App\Tests\Traits\FileCreatorTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AvatarUploaderTest extends KernelTestCase
 {
-    /**
-     * @var UploadedFile
-     */
-    private UploadedFile $file;
+    use FileCreatorTrait;
 
     public function setUp(): void
     {
@@ -20,24 +16,7 @@ class AvatarUploaderTest extends KernelTestCase
 
         self::bootKernel();
 
-        $this->file = $this->createUploadFile();
-    }
-
-    private function createUploadFile(): UploadedFile
-    {
-        $file = tempnam(dirname(__FILE__), 'test');
-
-        if (!$file) {
-            throw new LogicException('File doesnt create!');
-        }
-
-        return new UploadedFile(
-            $file,
-            'test.jpg',
-            'image/jpeg',
-            null,
-            true
-        );
+        $this->createUploadFile('test.jpg', 'image/jpeg');
     }
 
     public function testCanSaveImage()
@@ -58,8 +37,6 @@ class AvatarUploaderTest extends KernelTestCase
     {
         parent::tearDown();
 
-        if (file_exists($this->file->getPathname())) {
-            unlink($this->file->getPathname());
-        }
+        $this->tearDownFile(); // mb available auto delete?
     }
 }
