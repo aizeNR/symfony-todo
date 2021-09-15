@@ -31,6 +31,7 @@ class UserRegisteredTest extends WebTestCase
     public function testUserCanRegistered($email, $password)
     {
         // TODO change route, use name
+        // TODO Check mail send ... here?
         $this->client->request('POST', '/api/v1/register', [
             'email' => $email,
             'password' => $password
