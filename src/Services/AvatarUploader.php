@@ -43,4 +43,12 @@ class AvatarUploader
 
         return $newFileName;
     }
+
+    /**
+     * @return string
+     */
+    public function getDirectory(): string
+    {
+        return $this->directory;
+    }
 }
