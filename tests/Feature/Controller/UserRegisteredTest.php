@@ -85,7 +85,6 @@ class UserRegisteredTest extends WebTestCase
         $entity = $this->getRepository(User::class)->findOneBy(['email' => 'test@mail.ru']);
 
         $this->assertResponseStatusCodeSame(204);
-        $this->assertNotNull($entity);
         $this->assertNotNull($entity->getAvatar());
         $this->assertFileExists($avatarUploader->getDirectory() . $entity->getAvatar());
 
