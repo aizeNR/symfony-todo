@@ -15,15 +15,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CreateUserActionTest extends KernelTestCase
 {
-    private $container;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         static::bootKernel();
-
-        $this->container = static::getContainer();
     }
 
     /**
@@ -33,11 +29,21 @@ class CreateUserActionTest extends KernelTestCase
     {
         $createUserDto = new CreateUserDTO($email, $password);
         $userService = $this->createMock(UserService::class);
-        $hasher = $this->container->get(UserPasswordHasherInterface::class);
+        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
         $em = $this->createMock(EntityManagerInterface::class);
         $validator = $this->createMock(DtoValidator::class);
         $avatarUploader = $this->createMock(AvatarUploader::class);
         $dispatch = $this->createMock(EventDispatcherInterface::class);
+
+        $dispatch
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with( // check with user doesn't work, password hash doesn't equal
+                $this->callback(function ($subject) {
+                    return $subject instanceof CreateUserEvent;
+                }),
+                CreateUserEvent::NAME,
+            );
 
         $action = new CreateUserAction(
             $hasher,
@@ -49,16 +55,6 @@ class CreateUserActionTest extends KernelTestCase
         );
 
         $action->execute($createUserDto);
-
-        $dispatch
-            ->expects($this->once())
-            ->method('dispatch')
-            ->with( // check with user doesn't work, password hash doesn't equal
-                $this->callback(function ($subject) {
-                    return $subject instanceof CreateUserEvent;
-                }),
-                CreateUserEvent::NAME,
-            );
     }
 
     public function userProvider()
