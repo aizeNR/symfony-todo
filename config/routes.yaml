@@ -5,3 +5,8 @@
 api_login_check:
   path: /api/login_check
   methods: [ POST ]
+
+api_v1:
+  prefix: '/api/v1'
+  resource: '../src/Controller/Api/V1'
+  type: annotation
