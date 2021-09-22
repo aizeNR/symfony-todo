@@ -67,8 +67,8 @@ class TaskController extends BaseController
         $user = $this->getUser();
 
         $taskDTO = new CreateTaskDTO( // need add validation to request
-            $request->get('title'),
-            $request->get('description'),
+            $request->get('title', ''),
+            $request->get('description', ''),
             $user,
             $request->get('status', 0)
         );
@@ -130,8 +130,8 @@ class TaskController extends BaseController
         $this->denyAccessUnlessGranted(VoterCrud::EDIT, $task);
 
         $taskDTO = new UpdateTaskDTO( // need add validation to request
-            $request->get('title'),
-            $request->get('description'),
+            $request->get('title', ''),
+            $request->get('description', ''),
             $user,
             $request->get('status', 0)
         );
