@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Dictionary\TaskStatusDictionary;
 use App\Entity\Traits\CreateUpdateTimeTrait;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -44,6 +45,11 @@ class Task
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="integer", options={"default" : 0})
+     */
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -83,5 +89,26 @@ class Task
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @Groups({"show_task", "list_task"})
+     * @return string
+     */
+    public function getPrettyStatus(): string
+    {
+        return TaskStatusDictionary::getPrettyStatus($this->getStatus());
     }
 }

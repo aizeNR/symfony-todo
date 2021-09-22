@@ -13,23 +13,31 @@ class CreateTaskDTO extends BaseDTO
      * @Assert\Length(min=3, max=12)
      * @var string
      */
-    private $title;
+    private string $title;
 
     /**
+     * @Assert\Length(min=5, max=255)
      * @var string|null
      */
-    private $description;
+    private ?string $description;
 
     /**
      * @var User
      */
-    private $user;
+    private User $user;
 
-    public function __construct(string $title, ?string $description, User $user)
+    /**
+     * @Assert\Choice(callback={"App\Entity\Dictionary\TaskStatusDictionary", "getFlipDictionary"})
+     * @var int
+     */
+    private int $status;
+
+    public function __construct(string $title, ?string $description, User $user, int $status = 0)
     {
         $this->title = $title;
         $this->description = $description;
         $this->user = $user;
+        $this->status = $status;
     }
 
     /**
@@ -54,5 +62,13 @@ class CreateTaskDTO extends BaseDTO
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus(): int
+    {
+        return $this->status;
     }
 }

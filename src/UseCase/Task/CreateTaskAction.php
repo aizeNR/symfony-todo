@@ -44,6 +44,7 @@ class CreateTaskAction
         $task->setTitle($taskDTO->getTitle());
         $task->setDescription($taskDTO->getDescription());
         $task->setUser($taskDTO->getUser());
+        $task->setStatus($taskDTO->getStatus());
 
         $this->entityManager->persist($task);
         $this->entityManager->flush();

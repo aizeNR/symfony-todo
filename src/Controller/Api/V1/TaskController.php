@@ -3,9 +3,9 @@
 namespace App\Controller\Api\V1;
 
 use App\DTO\Task\CreateTaskDTO;
+use App\DTO\Task\TaskFilterDTO;
 use App\DTO\Task\UpdateTaskDTO;
 use App\Entity\Task;
-use App\Exception\Task\CreateTaskException;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
 use App\Security\VoterCrud;
@@ -36,9 +36,10 @@ class TaskController extends BaseController
         $user = $this->getUser();
 
         $page = (int)$request->get('page', 1);
-        $limit = (int) $request->get('limit');
+        $limit = (int) $request->get('limit', 10);
+        $filter = new TaskFilterDTO($request->get('filter', []));
 
-        $tasks = $repository->getPaginateTasksForUser($user, $page, $limit);
+        $tasks = $repository->getPaginateTasksForUser($user, $filter, $page, $limit);
 
         return $this->successResponse(
             $tasks->getResults(),
@@ -65,7 +66,8 @@ class TaskController extends BaseController
         $taskDTO = new CreateTaskDTO( // need add validation to request
             $request->get('title'),
             $request->get('description'),
-            $user
+            $user,
+            $request->get('status', 0)
         );
 
         $task = $createTaskAction->execute($taskDTO);
@@ -127,7 +129,8 @@ class TaskController extends BaseController
         $taskDTO = new UpdateTaskDTO( // need add validation to request
             $request->get('title'),
             $request->get('description'),
-            $user
+            $user,
+            $request->get('status', 0)
         );
 
         $task = $updateTaskAction->execute($id, $taskDTO);
