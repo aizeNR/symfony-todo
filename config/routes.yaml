@@ -10,6 +10,7 @@ api_v1:
   prefix: '/api/v1'
   resource: '../src/Controller/Api/V1'
   type: annotation
+  name_prefix: 'v1.'
 
 app.swagger_ui:
   path: /api/doc

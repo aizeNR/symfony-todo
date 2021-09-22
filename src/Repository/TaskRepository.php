@@ -44,7 +44,7 @@ class TaskRepository extends ServiceEntityRepository
                 ->setParameter('taskTitle', '%' . $filterDTO->getTaskTitle() . '%');
         }
 
-        if (!is_null($filterDTO->getTaskTitle())) {
+        if (!is_null($filterDTO->getTaskStatus())) {
             $queryBuilder->andWhere("t.status = :taskStatus")
                 ->setParameter('taskStatus',  $filterDTO->getTaskStatus());
         }

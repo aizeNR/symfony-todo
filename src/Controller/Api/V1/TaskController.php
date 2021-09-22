@@ -16,7 +16,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use OpenApi\Annotations as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
+/**
+ * @OA\Tag(name="Tasks")
+ * @Route("/tasks", name="tasks.")
+ */
 class TaskController extends BaseController
 {
     /**
@@ -30,7 +36,27 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route("/tasks", name="task.index", methods={"GET"})
+     * @Route("", name="index", methods={"GET"})
+     * @OA\Parameter(
+     *     name="filter[taskTitle]",
+     *     in="query",
+     *     description="Filter by task title",
+     *     @OA\Schema(type="string")
+     * )
+     * @OA\Parameter(
+     *     name="filter[taskStatus]",
+     *     in="query",
+     *     description="Filter by task status. 0 - draft, 1 - progress, 2 - complete.",
+     *     @OA\Schema(type="integer", enum={0, 1, 2})
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="Return list of tasks",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Task::class, groups={"list_task", "default"}))
+     *     )
+     * )
      */
     public function index(Request $request, TaskRepository $repository): JsonResponse
     {
@@ -53,14 +79,22 @@ class TaskController extends BaseController
                     'list_task',
                     'default'
                 ],
-                AbstractNormalizer::IGNORED_ATTRIBUTES => [
-                    'user'
-                ]
             ]);
     }
 
     /**
-     * @Route("/tasks", name="task.store", methods={"POST"})
+     * @Route("", name="store", methods={"POST"})
+     * @OA\RequestBody(
+     *     @OA\MediaType(
+     *          mediaType="aplication/json",
+     *          @OA\Schema(ref=@Model(type=Task::class, groups={"create_task"}))
+     *     )
+     * ),
+     * @OA\Response(
+     *     response=200,
+     *     description="Show created task",
+     *     @OA\JsonContent(ref=@Model(type=Task::class, groups={"show_task", "default"})),
+     * )
      */
     public function store(Request $request, CreateTaskAction $createTaskAction): JsonResponse
     {
@@ -88,7 +122,12 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route("/tasks/{id}", methods={"GET"})
+     * @Route("/{id}", name="show", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Show task",
+     *     @OA\JsonContent(ref=@Model(type=Task::class, groups={"show_task", "default"})),
+     * )
      *
      * @param int $id
      * @param TaskRepository $repository
@@ -120,7 +159,18 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route("/tasks/{id}", methods={"PUT"})
+     * @Route("/{id}", name="update", methods={"PUT"})
+     * @OA\RequestBody(
+     *     @OA\MediaType(
+     *          mediaType="aplication/json",
+     *          @OA\Schema(ref=@Model(type=Task::class, groups={"create_task"}))
+     *     )
+     * ),
+     * @OA\Response(
+     *     response=200,
+     *     description="Show created task",
+     *     @OA\JsonContent(ref=@Model(type=Task::class, groups={"show_task", "default"})),
+     * )
      */
     public function update(int $id, Request $request, UpdateTaskAction $updateTaskAction, TaskRepository $repository): JsonResponse
     {
@@ -151,7 +201,7 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route ("/tasks/{id}", methods={"DELETE"})
+     * @Route ("/{id}", name="delete", methods={"DELETE"})
      *
      * @param int $id
      * @param TaskRepository $repository

@@ -28,13 +28,13 @@ class Task
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
-     * @Groups({"show_task", "list_task"})
+     * @Groups({"show_task", "list_task", "create_task"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"show_task"})
+     * @Groups({"show_task", "create_task"})
      */
     private $description;
 
@@ -47,6 +47,7 @@ class Task
 
     /**
      * @ORM\Column(type="integer", options={"default" : 0})
+     * @Groups({"show_task", "list_task", "create_task"})
      */
     private $status;
 
