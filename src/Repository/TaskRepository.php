@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO\PaginatorDTO;
 use App\DTO\Task\TaskFilterDTO;
 use App\Entity\Task;
 use App\Entity\User;
@@ -23,7 +24,7 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function getPaginateTasksForUser(User $user, TaskFilterDTO $filter, int $page = 1, $limit = 10): Paginator
+    public function getPaginateTasksForUser(User $user, TaskFilterDTO $filter, PaginatorDTO $paginatorDTO): Paginator
     {
         $qb = $this->createQueryBuilder('t')
             ->addSelect( 'u')
@@ -33,7 +34,7 @@ class TaskRepository extends ServiceEntityRepository
 
         $this->appendFilter($qb, $filter);
 
-        return (new Paginator($qb, $limit))->paginate($page);
+        return (new Paginator($qb, $paginatorDTO->getLimit()))->paginate($paginatorDTO->getPage());
     }
 
     private function appendFilter(QueryBuilder $queryBuilder, TaskFilterDTO $filterDTO)

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api\V1;
 
+use App\DTO\PaginatorDTO;
 use App\DTO\Task\CreateTaskDTO;
 use App\DTO\Task\TaskFilterDTO;
 use App\DTO\Task\UpdateTaskDTO;
@@ -21,7 +22,7 @@ class TaskController extends BaseController
     /**
      * @var ValidationErrorHelper
      */
-    private $validationErrorHelper;
+    private ValidationErrorHelper $validationErrorHelper;
 
     public function __construct(ValidationErrorHelper $validationErrorHelper)
     {
@@ -35,11 +36,13 @@ class TaskController extends BaseController
     {
         $user = $this->getUser();
 
-        $page = (int)$request->get('page', 1);
-        $limit = (int) $request->get('limit', 10);
-        $filter = new TaskFilterDTO($request->get('filter', []));
+        $filterDTO = new TaskFilterDTO($request->get('filter', []));
+        $paginatorDTO = new PaginatorDTO(
+            (int)$request->get('page', 1),
+            (int) $request->get('limit', 10),
+        );
 
-        $tasks = $repository->getPaginateTasksForUser($user, $filter, $page, $limit);
+        $tasks = $repository->getPaginateTasksForUser($user, $filterDTO, $paginatorDTO);
 
         return $this->successResponse(
             $tasks->getResults(),
