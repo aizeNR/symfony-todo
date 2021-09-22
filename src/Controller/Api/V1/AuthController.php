@@ -20,8 +20,8 @@ class AuthController extends BaseController
     public function register(Request $request, CreateUserAction $createUserAction): JsonResponse
     {
         $userDTO = new CreateUserDTO(
-            $request->request->get('email'),
-            $request->request->get('password'),
+            $request->request->get('email', ''),
+            $request->request->get('password', ''),
             $request->files->get('avatar')
         );
 
