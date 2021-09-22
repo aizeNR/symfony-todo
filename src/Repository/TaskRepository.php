@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\DTO\Task\TaskFilterDTO;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,24 +23,30 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function paginate($page = 1, $filterByUser): Paginator
+    public function getPaginateTasksForUser(User $user, TaskFilterDTO $filter, int $page = 1, $limit = 10): Paginator
     {
-        $qb = $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('t')
             ->addSelect( 'u')
-            ->innerJoin('p.user', 'u');
-
-        return (new Paginator($qb))->paginate($page);
-    }
-
-    public function getPaginateTasksForUser(User $user, int $page = 1, $limit = 10): Paginator
-    {
-        $qb = $this->createQueryBuilder('p')
-            ->addSelect( 'u')
-            ->innerJoin('p.user', 'u')
+            ->innerJoin('t.user', 'u')
             ->where('u.id = :userId')
             ->setParameter(':userId', $user->getId());
 
+        $this->appendFilter($qb, $filter);
+
         return (new Paginator($qb, $limit))->paginate($page);
+    }
+
+    private function appendFilter(QueryBuilder $queryBuilder, TaskFilterDTO $filterDTO)
+    {
+        if (!is_null($filterDTO->getTaskTitle())) {
+            $queryBuilder->andWhere("t.title LIKE :taskTitle")
+                ->setParameter('taskTitle', '%' . $filterDTO->getTaskTitle() . '%');
+        }
+
+        if (!is_null($filterDTO->getTaskTitle())) {
+            $queryBuilder->andWhere("t.status = :taskStatus")
+                ->setParameter('taskStatus',  $filterDTO->getTaskStatus());
+        }
     }
 
     // /**
