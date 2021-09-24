@@ -23,22 +23,7 @@ Configure .env
 сp .env.example .env
 ```
 
-Install dependency 
-```
-composer install
-```
-
-Generate JWT SSL keys 
-```
-php bin/console lexik:jwt:generate-keypair
-```
-
 Run
 ```
 docker-compose up -d --build
-```
-
-Execute 
-```
-docker-compose exec php php bin/console doctrine:migration:migrate
 ```
