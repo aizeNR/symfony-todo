@@ -1,0 +1,10 @@
+sentry:
+    dsn: '%env(SENTRY_DSN)%'
+
+monolog:
+    handlers:
+        sentry:
+            type: sentry
+            level: !php/const Monolog\Logger::ERROR
+            hub_id: Sentry\State\HubInterface
+            excluded_http_codes: [ 404, 405 ]

@@ -6,8 +6,8 @@ use App\Helpers\ValidationErrorHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Messenger\Exception\ValidationFailedException;
-use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 class ExceptionListener
 {
@@ -26,6 +26,7 @@ class ExceptionListener
         $exception = $event->getThrowable();
 
         $response = new JsonResponse();
+
         $message = 'Internal Server Error!';
         if ($exception instanceof ValidationFailedException) {
             $violations = $exception->getViolations();
