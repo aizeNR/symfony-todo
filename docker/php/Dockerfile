@@ -14,4 +14,7 @@ WORKDIR /var/www/symfony_docker
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-CMD composer install; wait-for-it database:3306 -- bin/console doctrine:migrations:migrate; bin/console lexik:jwt:generate-keypair --skip-if-exists; php-fpm;
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+CMD php-fpm;

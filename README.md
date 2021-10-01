@@ -28,3 +28,18 @@ Run
 ```
 docker-compose up -d --build
 ```
+
+Composer install
+```
+docker-compose exec php composer install
+```
+
+Migrate 
+```
+docker-compose exec php bin/console doctrine:migrations:migrate
+```
+
+Generate JWT secrets
+```
+docker-compose exec php bin/console lexik:jwt:generate-keypair
+```
