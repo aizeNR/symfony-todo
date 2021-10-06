@@ -6,13 +6,12 @@ use App\DTO\User\CreateUserDTO;
 use App\UseCase\User\CreateUserAction;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AuthController extends BaseController
 {
     /**
-     * @Route ("/register", methods={"POST"})
+     * @Route ("/register", methods={"POST"}, name="register")
      * @param Request $request
      * @param CreateUserAction $createUserAction
      * @return JsonResponse

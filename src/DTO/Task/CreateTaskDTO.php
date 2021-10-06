@@ -32,12 +32,15 @@ class CreateTaskDTO extends BaseDTO
      */
     private int $status;
 
-    public function __construct(string $title, ?string $description, User $user, int $status = 0)
+    private array $tagIds;
+
+    public function __construct(string $title, ?string $description, User $user, int $status = 0, $tagIds)
     {
         $this->title = $title;
         $this->description = $description;
         $this->user = $user;
         $this->status = $status;
+        $this->tagIds = $tagIds;
     }
 
     /**
@@ -70,5 +73,13 @@ class CreateTaskDTO extends BaseDTO
     public function getStatus(): int
     {
         return $this->status;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTagIds(): array
+    {
+        return $this->tagIds;
     }
 }

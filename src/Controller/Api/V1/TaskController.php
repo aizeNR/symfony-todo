@@ -102,9 +102,10 @@ class TaskController extends BaseController
 
         $taskDTO = new CreateTaskDTO( // need add validation to request
             $request->get('title', ''),
-            $request->get('description', ''),
+            $request->get('description'),
             $user,
-            $request->get('status', 0)
+            $request->get('status', 0),
+            $request->get('tags', []),
         );
 
         $task = $createTaskAction->execute($taskDTO);
@@ -174,16 +175,19 @@ class TaskController extends BaseController
      */
     public function update(int $id, Request $request, UpdateTaskAction $updateTaskAction, TaskRepository $repository): JsonResponse
     {
+        $data = json_decode($request->getContent(), true);
+
         $task = $repository->find($id);
         $user = $this->getUser();
 
         $this->denyAccessUnlessGranted(VoterCrud::EDIT, $task);
 
         $taskDTO = new UpdateTaskDTO( // need add validation to request
-            $request->get('title', ''),
-            $request->get('description', ''),
+            $data['title'] ?? '',
+            $data['description'] ?? null,
             $user,
-            $request->get('status', 0)
+            $data['status'] ?? 0,
+            $data['tags'] ?? [],
         );
 
         $task = $updateTaskAction->execute($id, $taskDTO);

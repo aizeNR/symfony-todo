@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Entity\Dictionary\TaskStatusDictionary;
 use App\Entity\Traits\CreateUpdateTimeTrait;
 use App\Repository\TaskRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,6 +52,18 @@ class Task
      * @Groups({"show_task", "list_task", "create_task"})
      */
     private $status;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="tasks")
+     * @ORM\JoinTable(name="task_tag")
+     * @Groups({"show_task", "list_task", "create_task"})
+     */
+    private $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -111,5 +125,31 @@ class Task
     public function getPrettyStatus(): string
     {
         return TaskStatusDictionary::getPrettyStatus($this->getStatus());
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag ...$tags): self
+    {
+        foreach ($tags as $tag) {
+            if (!$this->tags->contains($tag)) {
+                $this->tags[] = $tag;
+            }
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        $this->tags->removeElement($tag);
+
+        return $this;
     }
 }

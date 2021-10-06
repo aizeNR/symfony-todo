@@ -27,8 +27,9 @@ class TaskRepository extends ServiceEntityRepository
     public function getPaginateTasksForUser(User $user, TaskFilterDTO $filter, PaginatorDTO $paginatorDTO): Paginator
     {
         $qb = $this->createQueryBuilder('t')
-            ->addSelect( 'u')
+            ->addSelect( 'u', 'tags')
             ->innerJoin('t.user', 'u')
+            ->innerJoin('t.tags', 'tags')
             ->where('u.id = :userId')
             ->setParameter(':userId', $user->getId());
 

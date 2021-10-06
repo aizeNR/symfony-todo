@@ -4,6 +4,7 @@ namespace App\UseCase\Task;
 
 use App\DTO\Task\UpdateTaskDTO;
 use App\Entity\Task;
+use App\Repository\TagRepository;
 use App\Repository\TaskRepository;
 use App\Services\DTO\DtoValidator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +26,12 @@ class UpdateTaskAction
     /**
      * @var TaskRepository
      */
-    private $taskRepository;
+    private TaskRepository $taskRepository;
+
+    /**
+     * @var TagRepository
+     */
+    private TagRepository $tagRepository;
 
 
     /**
@@ -36,12 +42,14 @@ class UpdateTaskAction
     public function __construct(
         EntityManagerInterface $entityManager,
         DtoValidator     $validator,
-        TaskRepository         $taskRepository
+        TaskRepository         $taskRepository,
+        TagRepository $tagRepository
     )
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->taskRepository = $taskRepository;
+        $this->tagRepository = $tagRepository;
     }
 
     public function execute(int $taskId, UpdateTaskDTO $taskDTO): Task
@@ -54,6 +62,10 @@ class UpdateTaskAction
         $task->setDescription($taskDTO->getDescription());
         $task->setUser($taskDTO->getUser());
         $task->setStatus($taskDTO->getStatus());
+
+        $tags = $this->tagRepository->findBy(['id' => $taskDTO->getTagIds()]);
+
+        $task->addTag(...$tags);
 
         $this->entityManager->persist($task);
         $this->entityManager->flush();
