@@ -49,7 +49,7 @@ class CreateUserCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function askEmail($helper, $input, $output)
+    private function askEmail($helper, InputInterface $input, OutputInterface $output)
     {
         $question = new Question('Please enter email:', false);
 
@@ -62,7 +62,7 @@ class CreateUserCommand extends Command
         return $email;
     }
 
-    private function askPassword($helper, $input, $output)
+    private function askPassword($helper, InputInterface $input, OutputInterface $output)
     {
         $question = new Question('Please enter password:', false);
 

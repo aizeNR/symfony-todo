@@ -17,7 +17,7 @@ class ValidationErrorHelper
         return ['errors' => [$prettyList]];
     }
 
-    public function getMessageForNotFound(string $entity, $findKey): string
+    public function getMessageForNotFound(string $entity, int $findKey): string
     {
         return "{$entity} with key '{$findKey}' not found!";
     }

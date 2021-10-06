@@ -87,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|Task[]
+     * @return Collection
      */
     public function getTasks(): Collection
     {
@@ -128,6 +128,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return null;
     }
 
+    /**
+     * @return void
+     */
     public function eraseCredentials()
     {
 

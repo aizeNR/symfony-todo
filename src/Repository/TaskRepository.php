@@ -38,7 +38,7 @@ class TaskRepository extends ServiceEntityRepository
         return (new Paginator($qb, $paginatorDTO->getLimit()))->paginate($paginatorDTO->getPage());
     }
 
-    private function appendFilter(QueryBuilder $queryBuilder, TaskFilterDTO $filterDTO)
+    private function appendFilter(QueryBuilder $queryBuilder, TaskFilterDTO $filterDTO): void
     {
         if (!is_null($filterDTO->getTaskTitle())) {
             $queryBuilder->andWhere("t.title LIKE :taskTitle")

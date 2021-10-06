@@ -15,22 +15,22 @@ class CreateUserDTO extends BaseDTO
      * @Assert\Email
      * @var string
      */
-    private $email;
+    private string $email;
 
     /**
      * @Assert\NotBlank
      * @Assert\Length(min=6, max=16)
      * @var string
      */
-    private $password;
+    private string $password;
 
     /**
      * @Assert\Image()
-     * @var ?File
+     * @var ?UploadedFile
      */
-    private $avatar;
+    private ?UploadedFile $avatar;
 
-    public function __construct(string $email, string $password, ?File $avatar = null)
+    public function __construct(string $email, string $password, ?UploadedFile $avatar = null)
     {
         $this->email = $email;
         $this->password = $password;
@@ -54,7 +54,7 @@ class CreateUserDTO extends BaseDTO
     }
 
     /**
-     * @return  ?File
+     * @return ?UploadedFile
      */
     public function getAvatar(): ?UploadedFile
     {

@@ -30,9 +30,4 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Tasks', 'fas fa-list', Task::class);
     }
-
-    public function createEntity(string $entityFqcn)
-    {
-        dd($entityFqcn);
-    }
 }

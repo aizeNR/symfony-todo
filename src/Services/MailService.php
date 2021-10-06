@@ -27,8 +27,12 @@ class MailService
 
     /**
      * @throws TransportExceptionInterface
+     *
+     * @param string $emailType
+     *
+     * @return void
      */
-    public function sendEmailToUser(User $user, $emailType)
+    public function sendEmailToUser(User $user, string $emailType): void
     {
 //        $email = $this->emailFactory->buildEmailByType($user, $emailType)
         $email = $this->getTestMail($user);
@@ -36,7 +40,11 @@ class MailService
         $this->mailer->send($email);
     }
 
-    private function getTestMail(User $user)
+    /**
+     * @param User $user
+     * @return Email
+     */
+    private function getTestMail(User $user): Email
     {
         return (new Email())
             ->from('hello@example.com')

@@ -21,7 +21,7 @@ class ExceptionListener
         $this->errorHelper = $errorHelper;
     }
 
-    public function onKernelException(ExceptionEvent $event)
+    public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
 

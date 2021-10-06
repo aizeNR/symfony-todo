@@ -16,7 +16,7 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function checkUserExists($email)
+    public function checkUserExists(string $email): void
     {
         $user = $this->userRepository->findOneBy(['email' => $email]);
 

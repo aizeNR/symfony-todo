@@ -26,7 +26,7 @@ class TaskStatusDictionary
         ];
     }
 
-    public static function getPrettyStatus($key): string
+    public static function getPrettyStatus(int $key): string
     {
         $statuses = static::getDictionary();
 

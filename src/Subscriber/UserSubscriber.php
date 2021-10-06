@@ -23,7 +23,7 @@ class UserSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onCreateUser(CreateUserEvent $event)
+    public function onCreateUser(CreateUserEvent $event): void
     {
         $user = $event->getUser();
 

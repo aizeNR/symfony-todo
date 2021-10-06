@@ -45,9 +45,12 @@ trait CreateUpdateTimeTrait
 
     /**
      * @ORM\PrePersist
+     *
      * @ORM\PreUpdate
+     *
+     * @return self
      */
-    public function setUpdatedAtValue()
+    public function setUpdatedAtValue(): self
     {
         $this->updatedAt = new \DateTime('now');
 
@@ -56,8 +59,10 @@ trait CreateUpdateTimeTrait
 
     /**
      * @ORM\PrePersist
+     *
+     * @return self
      */
-    public function setCreatedAtValue()
+    public function setCreatedAtValue(): self
     {
         $this->createdAt = new \DateTime('now');;
 

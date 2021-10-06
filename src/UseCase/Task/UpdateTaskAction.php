@@ -73,7 +73,7 @@ class UpdateTaskAction
         return $task;
     }
 
-    private function findTask($taskId): Task
+    private function findTask(int $taskId): Task
     {
         $task = $this->taskRepository->find($taskId);
 

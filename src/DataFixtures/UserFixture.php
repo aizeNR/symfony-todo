@@ -16,6 +16,9 @@ class UserFixture extends Fixture
         $this->hasher = $hasher;
     }
 
+    /**
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         foreach ($this->getUsers() as $user) {

@@ -55,7 +55,7 @@ class Tag
     }
 
     /**
-     * @return Collection|Task[]
+     * @return Collection
      */
     public function getTasks(): Collection
     {

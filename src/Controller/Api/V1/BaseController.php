@@ -7,12 +7,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BaseController extends AbstractController
 {
-    public function successResponse($data, $code = 200, $headers = [], $context = []): JsonResponse
+    /**
+     * @param array|null|object $data
+     * @param int $code
+     * @param string[][] $context
+     */
+    public function successResponse($data, int $code = 200, array $headers = [], array $context = []): JsonResponse
     {
         return $this->json($data, $code, $headers, $context);
     }
 
-    public function errorResponse($data, $code = 400, $headers = [], $context = []): JsonResponse
+    /**
+     * @param string[][] $data
+     * @param int $code
+     */
+    public function errorResponse(array $data, int $code = 400, $headers = [], $context = []): JsonResponse
     {
         return $this->json($data, $code, $headers, $context);
     }
