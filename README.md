@@ -43,3 +43,21 @@ Generate JWT secrets
 ```
 docker-compose exec php bin/console lexik:jwt:generate-keypair
 ```
+
+## Tests
+Config test database
+```
+docker-composer php php bin/console --env=test doctrine:database:create
+docker-composer php php bin/console --env=test doctrine:schema:create
+```
+
+Create JWT test keys, for secret use APP_SECRET
+```
+openssl genrsa -out config/jwt/private-test.pem -aes256 4096
+openssl rsa -pubout -in config/jwt/private-test.pem -out config/jwt/public-test.pem
+```
+
+Run tests
+```
+docker-composer php php ./vendor/bin/phpunit
+```
