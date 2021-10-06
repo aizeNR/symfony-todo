@@ -14,16 +14,21 @@ class CreateTaskAction
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
-     * @var ValidatorInterface
+     * @var DtoValidator
      */
-    private $validator;
+    private DtoValidator $validator;
+
+    /**
+     * @var TagRepository
+     */
     private TagRepository $tagRepository;
 
     /**
      * @param EntityManagerInterface $entityManager
+     * @param TagRepository $tagRepository
      * @param DtoValidator $validator
      */
     public function __construct(

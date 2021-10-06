@@ -19,22 +19,22 @@ class CreateUserAction
     /**
      * @var UserPasswordHasherInterface
      */
-    private $hasher;
+    private UserPasswordHasherInterface $hasher;
 
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
-     * @var ValidatorInterface
+     * @var DtoValidator
      */
-    private $validator;
+    private DtoValidator $validator;
 
     /**
      * @var UserService
      */
-    private $userService;
+    private UserService $userService;
 
     /**
      * @var AvatarUploader

@@ -1,9 +1,21 @@
 {
+    "amphp/amp": {
+        "version": "v2.6.1"
+    },
+    "amphp/byte-stream": {
+        "version": "v1.8.1"
+    },
     "clue/stream-filter": {
         "version": "v1.5.0"
     },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.3"
+    },
+    "composer/semver": {
+        "version": "3.2.5"
+    },
+    "composer/xdebug-handler": {
+        "version": "2.0.2"
     },
     "dama/doctrine-test-bundle": {
         "version": "4.0",
@@ -16,6 +28,9 @@
         "files": [
             "config/packages/test/dama_doctrine_test_bundle.yaml"
         ]
+    },
+    "dnoegel/php-xdg-base-dir": {
+        "version": "v0.1.1"
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -124,6 +139,12 @@
     "egulias/email-validator": {
         "version": "3.1.1"
     },
+    "felixfbecker/advanced-json-rpc": {
+        "version": "v3.2.1"
+    },
+    "felixfbecker/language-server-protocol": {
+        "version": "1.5.1"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
@@ -182,8 +203,14 @@
             "config/routes/nelmio_api_doc.yaml"
         ]
     },
+    "netresearch/jsonmapper": {
+        "version": "v4.0.0"
+    },
     "nikic/php-parser": {
         "version": "v4.12.0"
+    },
+    "openlss/lib-array2xml": {
+        "version": "1.0.0"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
@@ -690,8 +717,14 @@
     "twig/twig": {
         "version": "v3.3.3"
     },
+    "vimeo/psalm": {
+        "version": "4.10.0"
+    },
     "webmozart/assert": {
         "version": "1.10.0"
+    },
+    "webmozart/path-util": {
+        "version": "2.3.0"
     },
     "zircote/swagger-php": {
         "version": "3.2.3"

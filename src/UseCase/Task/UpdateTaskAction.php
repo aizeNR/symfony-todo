@@ -16,12 +16,12 @@ class UpdateTaskAction
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
-     * @var ValidatorInterface
+     * @var DtoValidator
      */
-    private $validator;
+    private DtoValidator $validator;
 
     /**
      * @var TaskRepository
@@ -33,11 +33,11 @@ class UpdateTaskAction
      */
     private TagRepository $tagRepository;
 
-
     /**
      * @param EntityManagerInterface $entityManager
      * @param DtoValidator $validator
      * @param TaskRepository $taskRepository
+     * @param TagRepository $tagRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
