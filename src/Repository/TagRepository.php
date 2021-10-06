@@ -9,7 +9,9 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method Tag|null find($id, $lockMode = null, $lockVersion = null)
  * @method Tag|null findOneBy(array $criteria, array $orderBy = null)
+ * @psalm-method list<Tag> findAll()
  * @method Tag[]    findAll()
+ * @psalm-method list<Tag> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method Tag[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TagRepository extends ServiceEntityRepository

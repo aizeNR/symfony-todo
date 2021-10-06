@@ -34,7 +34,7 @@ class CreateTaskDTO extends BaseDTO
 
     private array $tagIds;
 
-    public function __construct(string $title, ?string $description, User $user, int $status = 0, $tagIds)
+    public function __construct(string $title, ?string $description, User $user, array $tagIds, int $status = 0)
     {
         $this->title = $title;
         $this->description = $description;

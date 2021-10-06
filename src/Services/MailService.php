@@ -46,9 +46,15 @@ class MailService
      */
     private function getTestMail(User $user): Email
     {
+        $email = $user->getEmail();
+
+        if (is_null($email)) {
+            throw new \DomainException('User doesnt have email!');
+        }
+
         return (new Email())
             ->from('hello@example.com')
-            ->to($user->getEmail())
+            ->to($email)
             ->subject('Test Mail')
             ->text('Sending emails is fun again!')
             ->html('<p>See Twig integration for better HTML integration!</p>');

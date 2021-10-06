@@ -10,11 +10,27 @@ class Paginator
 {
     public const PAGE_SIZE = 5;
 
-    private $queryBuilder;
-    private $currentPage;
-    private $pageSize;
-    private $results;
-    private $numResults;
+    private DoctrineQueryBuilder $queryBuilder;
+
+    /**
+     * @var int
+     */
+    private int $currentPage;
+
+    /**
+     * @var int
+     */
+    private int $pageSize;
+
+    /**
+     * @var \ArrayIterator
+     */
+    private \ArrayIterator $results;
+
+    /**
+     * @var int
+     */
+    private int $numResults;
 
     public function __construct(DoctrineQueryBuilder $queryBuilder, int $pageSize = self::PAGE_SIZE)
     {

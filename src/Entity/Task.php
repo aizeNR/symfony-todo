@@ -28,28 +28,42 @@ class Task
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column (type="string", length=255)
+     *
      * @Assert\NotBlank
-     * @Groups({"show_task", "list_task", "create_task"})
+     *
+     * @Groups ({"show_task", "list_task", "create_task"})
+     *
+     * @var null|string
      */
     private $title;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"show_task", "create_task"})
+     * @ORM\Column (type="text", nullable=true)
+     *
+     * @Groups ({"show_task", "create_task"})
+     *
+     * @var null|string
      */
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"show_task"})
+     * @ORM\ManyToOne (targetEntity=User::class, inversedBy="tasks")
+     *
+     * @ORM\JoinColumn (nullable=false)
+     *
+     * @Groups ({"show_task"})
+     *
+     * @var User|null
      */
     private $user;
 
     /**
-     * @ORM\Column(type="integer", options={"default" : 0})
-     * @Groups({"show_task", "list_task", "create_task"})
+     * @ORM\Column (type="integer", options={"default" : 0})
+     *
+     * @Groups ({"show_task", "list_task", "create_task"})
+     *
+     * @var int|null
      */
     private $status;
 

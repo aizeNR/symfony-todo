@@ -10,8 +10,23 @@
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="src/Security"/>
+            <directory name="src/Entity"/>
         </ignoreFiles>
     </projectFiles>
+    <issueHandlers>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="src/Pagination"/>
+                <directory name="src/DataFixtures"/>
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+       <InvalidScalarArgument>
+           <errorLevel type="suppress">
+               <directory name="src"/>
+           </errorLevel>
+       </InvalidScalarArgument>
+    </issueHandlers>
+
     <plugins>
         <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
     </plugins>

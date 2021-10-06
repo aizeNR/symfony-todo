@@ -14,7 +14,9 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method Task|null find($id, $lockMode = null, $lockVersion = null)
  * @method Task|null findOneBy(array $criteria, array $orderBy = null)
+ * @psalm-method list<Task> findAll()
  * @method Task[]    findAll()
+ * @psalm-method list<Task> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method Task[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TaskRepository extends ServiceEntityRepository
@@ -27,7 +29,7 @@ class TaskRepository extends ServiceEntityRepository
     public function getPaginateTasksForUser(User $user, TaskFilterDTO $filter, PaginatorDTO $paginatorDTO): Paginator
     {
         $qb = $this->createQueryBuilder('t')
-            ->addSelect( 'u', 'tags')
+            ->addSelect( ['u', 'tags'])
             ->innerJoin('t.user', 'u')
             ->innerJoin('t.tags', 'tags')
             ->where('u.id = :userId')

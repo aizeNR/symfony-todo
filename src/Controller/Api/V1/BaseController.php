@@ -8,9 +8,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class BaseController extends AbstractController
 {
     /**
-     * @param array|null|object $data
+     * @param mixed $data
      * @param int $code
+     * @param array $headers
      * @param string[][] $context
+     * @return JsonResponse
      */
     public function successResponse($data, int $code = 200, array $headers = [], array $context = []): JsonResponse
     {
@@ -18,10 +20,13 @@ class BaseController extends AbstractController
     }
 
     /**
-     * @param string[][] $data
+     * @param mixed $data
      * @param int $code
+     * @param array $headers
+     * @param array $context
+     * @return JsonResponse
      */
-    public function errorResponse(array $data, int $code = 400, $headers = [], $context = []): JsonResponse
+    public function errorResponse(array $data, int $code = 400, array $headers = [], array $context = []): JsonResponse
     {
         return $this->json($data, $code, $headers, $context);
     }

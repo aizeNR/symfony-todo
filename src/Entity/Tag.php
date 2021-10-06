@@ -22,8 +22,11 @@ class Tag
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show_task", "list_task", "create_task"})
+     * @ORM\Column (type="string", length=255)
+     *
+     * @Groups ({"show_task", "list_task", "create_task"})
+     *
+     * @var null|string
      */
     private $name;
 

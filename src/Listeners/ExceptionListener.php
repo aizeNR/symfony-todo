@@ -36,8 +36,11 @@ class ExceptionListener
             $response->headers->replace($exception->getHeaders());
             $response->setStatusCode($exception->getStatusCode());
             $message = $exception->getMessage();
+        } else if ($exception instanceof \DomainException) {
+            $response->setStatusCode((int) $exception->getCode());
+            $message = $exception->getMessage();
         } else {
-            $response->setStatusCode($exception->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
             $message = $exception->getMessage();
         }
 

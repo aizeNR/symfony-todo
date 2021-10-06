@@ -12,7 +12,15 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class CreateUserCommand extends Command
 {
+    /**
+     * @var string
+     * @psalm-suppress NonInvariantDocblockPropertyType
+     */
     protected static $defaultName = 'app:create-user';
+
+    /**
+     * @var CreateUserAction
+     */
     private CreateUserAction $createUserAction;
 
     /**
@@ -32,9 +40,6 @@ class CreateUserCommand extends Command
             ->setHelp('This command allows you to create a user...');
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $helper = $this->getHelper('question');
@@ -49,6 +54,12 @@ class CreateUserCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @param mixed $helper
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return mixed
+     */
     private function askEmail($helper, InputInterface $input, OutputInterface $output)
     {
         $question = new Question('Please enter email:', false);
@@ -62,6 +73,12 @@ class CreateUserCommand extends Command
         return $email;
     }
 
+    /**
+     * @param mixed $helper
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return mixed
+     */
     private function askPassword($helper, InputInterface $input, OutputInterface $output)
     {
         $question = new Question('Please enter password:', false);

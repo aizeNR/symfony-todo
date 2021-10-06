@@ -7,6 +7,7 @@ use App\DTO\Task\CreateTaskDTO;
 use App\DTO\Task\TaskFilterDTO;
 use App\DTO\Task\UpdateTaskDTO;
 use App\Entity\Task;
+use App\Entity\User;
 use App\Helpers\ValidationErrorHelper;
 use App\Repository\TaskRepository;
 use App\Security\VoterCrud;
@@ -60,6 +61,9 @@ class TaskController extends BaseController
      */
     public function index(Request $request, TaskRepository $repository): JsonResponse
     {
+        /**
+         * @var User $user
+         */
         $user = $this->getUser();
 
         $filterDTO = new TaskFilterDTO($request->get('filter', []));
@@ -98,14 +102,17 @@ class TaskController extends BaseController
      */
     public function store(Request $request, CreateTaskAction $createTaskAction): JsonResponse
     {
+        /**
+         * @var User $user
+         */
         $user = $this->getUser();
 
         $taskDTO = new CreateTaskDTO( // need add validation to request
             $request->get('title', ''),
             $request->get('description'),
             $user,
-            $request->get('status', 0),
             $request->get('tags', []),
+            $request->get('status', 0)
         );
 
         $task = $createTaskAction->execute($taskDTO);
@@ -178,6 +185,10 @@ class TaskController extends BaseController
         $data = json_decode($request->getContent(), true);
 
         $task = $repository->find($id);
+
+        /**
+         * @var User $user
+         */
         $user = $this->getUser();
 
         $this->denyAccessUnlessGranted(VoterCrud::EDIT, $task);
@@ -186,8 +197,8 @@ class TaskController extends BaseController
             $data['title'] ?? '',
             $data['description'] ?? null,
             $user,
-            $data['status'] ?? 0,
             $data['tags'] ?? [],
+            $data['status'] ?? 0
         );
 
         $task = $updateTaskAction->execute($id, $taskDTO);
