@@ -53,5 +53,6 @@ services:
       context: ./docker/workers
     volumes:
       - ./:/var/www/symfony_docker
+      - ./docker/workers/supervisord.d:/etc/supervisord.d
     depends_on:
       - php

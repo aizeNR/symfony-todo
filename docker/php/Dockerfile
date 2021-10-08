@@ -10,8 +10,6 @@ RUN apt-get update --allow-releaseinfo-change\
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip
 
-WORKDIR /var/www/symfony_docker
-
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN pecl install xdebug \
@@ -19,5 +17,7 @@ RUN pecl install xdebug \
 
 RUN pecl install redis \
     && docker-php-ext-enable redis
+
+WORKDIR /var/www/symfony_docker
 
 CMD php-fpm;
