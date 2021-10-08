@@ -16,7 +16,7 @@ RUN pecl install xdebug \
 RUN pecl install redis \
     && docker-php-ext-enable redis
 
-WORKDIR /etc
+WORKDIR /etc/supervisor/conf.d/
 
 COPY supervisord.conf /etc/supervisord.conf
 
