@@ -24,3 +24,4 @@
 
 /docker/mysql/
 /docker/nginx/logs/
+/docker/redis/dump.rdb

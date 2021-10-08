@@ -11,7 +11,7 @@ class CreateUserDTO extends BaseDTO
 {
     /**
      * @Assert\NotBlank
-     * @Assert\Length(min=5, max=16)
+     * @Assert\Length(min=5, max=30)
      * @Assert\Email
      * @var string
      */

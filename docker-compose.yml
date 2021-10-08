@@ -38,3 +38,20 @@ services:
       - ./docker/nginx/logs:/var/log/nginx:cached
     depends_on:
       - php
+
+  redis:
+    container_name: redis
+    image: redis:6-alpine
+    ports:
+      - '6380:6379'
+    volumes:
+      - ./docker/redis:/data
+
+  workers:
+    container_name: workers
+    build:
+      context: ./docker/workers
+    volumes:
+      - ./:/var/www/symfony_docker
+    depends_on:
+      - php
